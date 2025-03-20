@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
+    "axios": "^1.8.4",
     "element-plus": "^2.9.6",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
