@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
+    "element-plus": "^2.9.6",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
-    "vite": "^6.2.2"
+    "vite": "^6.2.2",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "typescript": "^5.5.3"
