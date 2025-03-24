@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment="new">
-      <change afterPath="$PROJECT_DIR$/src/components/Headers.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/router-meta.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment="new" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,12 +28,12 @@
     &quot;assignee&quot;: &quot;Wander-C&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Wander-C/Lab-Frontend.git&quot;,
-    &quot;accountId&quot;: &quot;1f1bc27e-89c6-439c-b1d4-c2e1902d3dd4&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Wander-C/Lab-Frontend.git",
+    "accountId": "36591c4c-ed3f-45c7-be61-3b67ce2a3e2e"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -54,14 +50,14 @@
     "Node.js.index.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/ASUS/Desktop/TeamWork/TomatoMall_Frontend/src/types",
+    "git-widget-placeholder": "dyy",
+    "last_opened_file_path": "D:/Course/SEAC/Two/Lab1-示例项目启动/BlueWhale-Frontend-Lab1",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Users\\ASUS\\Desktop\\TeamWork\\TomatoMall_Frontend\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "D:\\Software\\Toolbox\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -99,6 +95,7 @@
       <updated>1742471673737</updated>
       <workItem from="1742471675136" duration="2620000" />
       <workItem from="1742788369062" duration="329000" />
+      <workItem from="1742792414261" duration="300000" />
     </task>
     <task id="LOCAL-00001" summary="new">
       <option name="closed" value="true" />
