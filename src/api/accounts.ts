@@ -26,19 +26,16 @@ type UpdateInfo = {
     location?: string,   // 位置
 }
 
-type GetInfo = {
-    username: string,    // 用户名, 路径参数
-}
-
 export const accountsRegister = (registerInfo: RegisterInfo) => {
     return axios.post(`${ACCOUNTS_MODULE}`, registerInfo,
-        {headers: {'Content-Type': 'application/json'}})
+    {headers: {'Content-Type': 'application/json'}})
         .then(res => {
             return res
         })
 }
 export const accountsLogin = (loginInfo: LoginInfo) => {
-    return axios.post(`${ACCOUNTS_MODULE}/login`, null, { params: loginInfo})
+    return axios.post(`${ACCOUNTS_MODULE}/login`, loginInfo,
+        {headers: {'Content-Type': 'application/json'}})
         .then(res => {
             return res
         })
@@ -52,8 +49,8 @@ export const accountsUpdate = (updateInfo: UpdateInfo) => {
         })
 }
 
-export const accountsGet = (getInfo: GetInfo) => {
-    return axios.get(`${ACCOUNTS_MODULE}/${getInfo.username}`)
+export const accountsGet = (username: string) => {
+    return axios.get(`${ACCOUNTS_MODULE}/${username}`)
         .then(res => {
             return res
         })

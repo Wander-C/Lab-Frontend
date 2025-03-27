@@ -1,5 +1,5 @@
 import {API_MODULE} from "./_prefix";
-import axios from "axios";
+import {axios} from '../untils/request'
 
 export const uploadImage = (payload: any) => {
     return axios.post(`${API_MODULE}/images`, payload,
