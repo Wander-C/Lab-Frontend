@@ -25,22 +25,22 @@ function handleLogin() {
     username: username.value,
     password: password.value,
   }).then((res) => {
-    if (res.data.code === 200) {
+    if (res.data.code === '200') {
       ElMessage({
-        message: '登录成功',
+        message: '登录成功!',
         type: 'success',
         center: true,
       })
 
-      const token = res.data.result
+      const token = res.data.data
       sessionStorage.setItem('token', token)
-      accountsGet({
-        username: username.value,
-      }).then((res) => {
-        sessionStorage.setItem('username', res.data.result.username)
+      accountsGet(username.value).then((res) => {
+        sessionStorage.setItem('username', res.data.data.username)
+        sessionStorage.setItem('role', res.data.data.role)
+        sessionStorage.setItem('id', res.data.data.id)
         router.push({path: '/home'})
       })
-    } else if (res.data.code === 400) {
+    } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
         message: res.data.msg,
         type: 'error',

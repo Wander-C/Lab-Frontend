@@ -46,7 +46,7 @@ function handleUpload(file: any, fileList: any) {
   let formData = new FormData()
   formData.append('file', file.raw)
   uploadImage(formData).then(res => {
-    avatar.value = res.data.result
+    avatar.value = res.data.data
   })
 }
 
@@ -73,14 +73,14 @@ function handleRegister() {
     email: email.value,
     location: location.value,
   }).then(res => {
-    if (res.data.code === 200) {
+    if (res.data.code === '200') {
       ElMessage({
-        message: res.data.data,
+        message: '注册成功',
         type: 'success',
         center: true,
       })
       router.push({path: '/login'})
-    } else if (res.data.code === 400) {
+    } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
         message: res.data.msg,
         type: 'error',
