@@ -17,8 +17,10 @@ const imageFileList = ref([]);
 
 // 用户名是否为空
 const hasUsernameInput = computed(() => username.value != '')
-// 密码是否为空
+// 密码是否为空、密码规则、密码是否合法
 const hasPasswordInput = computed(() => password.value != '')
+const passwordRegex = /^(?![a-zA-Z]+$)(?![0-9]+$)(?![^a-zA-Z0-9]+$).{6,12}$/
+const isPasswordLegal = computed(() => passwordRegex.test(password.value))
 // 真实姓名是否为空
 const hasNameInput = computed(() => name.value != '')
 // 身份是否为空
@@ -101,7 +103,7 @@ function handleRegister() {
           <el-row>
             <el-col :span="8">
               <el-form-item required>
-                <label for="username">用户名</label>
+                <label for="username">用户名(必填)</label>
                 <el-input
                     :class="{ 'error-warn-input': !hasUsernameInput }"
                     id = "username"
@@ -115,7 +117,7 @@ function handleRegister() {
 
             <el-col :span="8">
               <el-form-item required>
-                <label for="name">真实姓名</label>
+                <label for="name">真实姓名(必填)</label>
                 <el-input
                     :class="{ 'error-warn-input': !hasNameInput }"
                     id = "name"
@@ -129,7 +131,7 @@ function handleRegister() {
 
             <el-col :span="6">
               <el-form-item required>
-                <label for="role">身份</label>
+                <label for="role">身份(必选)</label>
                 <el-select id = "role" v-model="role" placeholder="请选择身份">
                   <el-option value="CUSTOMER" label="顾客"/>
                   <el-option value="MANAGER" label="管理员"/>
@@ -141,7 +143,9 @@ function handleRegister() {
           <el-row>
             <el-col :span="11">
               <el-form-item required>
-                <label for="password">密码</label>
+                <label v-if="!hasPasswordInput" for="password">密码(必填)</label>
+                <label v-else-if="!isPasswordLegal" for="password" class="error-warn">密码不合法(6~12个字符且至少包含两种字符)</label>
+                <label v-else for="password">密码</label>
                 <el-input
                     :class="{ 'error-warn-input': !hasPasswordInput }"
                     id = "password"
@@ -156,7 +160,9 @@ function handleRegister() {
 
             <el-col :span="11">
               <el-form-item>
-                <label for="telephone">手机号</label>
+                <label v-if="!hasTelInput" for="telephone">手机号</label>
+                <label v-else-if="!isTelLegal" for="telephone" class="error-warn">手机号不合法</label>
+                <label v-else for="telephone">手机号</label>
                 <el-input
                     :class="{'error-warn-input': hasTelInput && !isTelLegal}"
                     id = "telephone"
@@ -179,7 +185,9 @@ function handleRegister() {
 
             <el-col :span="6">
               <el-form-item>
-                <label for="email">邮箱</label>
+                <label v-if="!hasEmailInput" for="email">邮箱</label>
+                <label v-else-if="!isEmailLegal" for="email" class="error-warn">邮箱不合法</label>
+                <label v-else for="email">邮箱</label>
                 <el-input
                     :class="{'error-warn-input': hasEmailInput && !isEmailLegal}"
                     id = "email"
