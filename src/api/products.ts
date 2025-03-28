@@ -1,3 +1,4 @@
+// 商品模块
 import {PRODUCTS_MODULE} from "./_prefix.ts";
 import {STOCKS_MODULE} from "./_prefix.ts";
 import {axios} from "../untils/request";
