@@ -4,19 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment="登录，注册，用户模块接口、路径">
-      <change afterPath="$PROJECT_DIR$/src/api/products.ts" afterDir="false" />
+    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment=".">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/components.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/_prefix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/_prefix.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/accounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/accounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/tools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/users/Dashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/users/Dashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/users/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/users/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/users/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/users/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/products.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/products.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,33 +52,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Node.js.index.ts.executor": "Run",
-    "Node.js.vite.config.ts.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "正在合并 main",
-    "last_opened_file_path": "D:/Course/SEAC/Two/Lab1-示例项目启动/BlueWhale-Frontend-Lab1",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "D:\\Course\\SEAC\\Two\\Lab-Frontend\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Node.js.index.ts.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.vite.config.ts.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Course/SEAC/Two/Lab1-示例项目启动/BlueWhale-Frontend-Lab1&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\Course\\SEAC\\Two\\Lab-Frontend\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ],
-    "vue.recent.templates": [
-      "Vue Composition API Component"
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\ASUS\Desktop\TeamWork\TomatoMall_Frontend\src\untils" />
@@ -128,6 +119,8 @@
       <workItem from="1743058535180" duration="3307000" />
       <workItem from="1743063330742" duration="1895000" />
       <workItem from="1743066583097" duration="6161000" />
+      <workItem from="1743129280218" duration="2209000" />
+      <workItem from="1743171847828" duration="1224000" />
     </task>
     <task id="LOCAL-00001" summary="new">
       <option name="closed" value="true" />
@@ -209,7 +202,23 @@
       <option name="project" value="LOCAL" />
       <updated>1743043906806</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="登录，注册，用户模块接口、路径">
+      <option name="closed" value="true" />
+      <created>1743073467662</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1743073467662</updated>
+    </task>
+    <task id="LOCAL-00012" summary=".">
+      <option name="closed" value="true" />
+      <created>1743073677064</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1743073677064</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,6 +238,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="new" />
     <MESSAGE value="登录，注册，用户模块接口、路径" />
-    <option name="LAST_COMMIT_MESSAGE" value="登录，注册，用户模块接口、路径" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>

@@ -1,5 +1,13 @@
 import {PRODUCTS_MODULE} from "./_prefix.ts";
+import {STOCKS_MODULE} from "./_prefix.ts";
 import {axios} from "../untils/request";
+
+type specificationInfo = {
+    id: string,         // 规格ID
+    item: string,       // 规格名称
+    value: string,      // 规格内容
+    productId: string,  // 规格必须属于指定商品
+}
 
 type productInfo = {
     title: string,
@@ -8,7 +16,7 @@ type productInfo = {
     description?: string,   // 描述
     cover?: string,         // 封面URL
     detail?: string,        // 详细说明
-    specification?: Set<string>,    // 规格说明
+    specification?: Set<specificationInfo>,    // 规格说明,为集合，一个商品可以对应多个规格
 }
 
 type productInfoUpdate = {
@@ -19,7 +27,12 @@ type productInfoUpdate = {
     description?: string,   // 描述
     cover?: string,         // 封面URL
     detail?: string,        // 详细说明
-    specification?: Set<string>,    // 规格说明
+    specification?: Set<specificationInfo>,    // 规格说明
+}
+
+type stockpileInfo = {
+    productId: string,  // 商品ID
+    amount: number,     // 库存数量
 }
 
 export const getAllProduct = () => {
@@ -54,6 +67,21 @@ export const updateProductInfo = (productInfoUpdate: productInfoUpdate) => {
 
 export const deleteProductById = (id: number) => {
     return axios.delete(`${PRODUCTS_MODULE}/${id}`)
+        .then(res => {
+            return res
+        })
+}
+
+export const adjustStockpile = (stockpileInfo: stockpileInfo) => {
+    return axios.patch(`${STOCKS_MODULE}/${stockpileInfo.productId}`, stockpileInfo,
+        {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            return res
+        })
+}
+
+export const getStockpileById = (productId: number) => {
+    return axios.get(`${STOCKS_MODULE}/${productId}`)
         .then(res => {
             return res
         })
