@@ -50,11 +50,11 @@ function getUserInfo() {
 function updateInfo() {
   accountsUpdate({
     username: username,
-    name: newName.value,
-    avatar:newAvatar.value,
-    telephone: newTel.value,
-    email: newEmail.value,
-    location: newLocation.value,
+    name: newName.value=='' ? undefined : newName.value,
+    avatar:newAvatar.value=='' ? undefined : avatar.value,
+    telephone: newTel.value=='' ? undefined : newTel.value,
+    email: newEmail.value=='' ? undefined : newEmail.value,
+    location: newLocation.value=='' ? undefined : newLocation.value,
   }).then(res => {
     if (res.data.code === '200') {
       ElMessage({
