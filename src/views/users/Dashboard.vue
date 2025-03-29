@@ -8,6 +8,14 @@ import {UserFilled} from "@element-plus/icons-vue";
 const role = sessionStorage.getItem("role")
 const username = sessionStorage.getItem("username") || ''
 
+
+const hasEmailInput = computed(() => newEmail.value != '')
+const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const isEmailLegal = computed(() => EmailRegex.test(newEmail.value))
+const hasTelInput = computed(() => newTel.value != '')
+const MobileRegex = /^1\d{10}$/
+const isTelLegal = computed(() => MobileRegex.test(newTel.value))
+
 const avatar=ref('')//头像
 const email = ref('')//邮箱
 const location = ref('')//地址
@@ -20,17 +28,20 @@ const newTel = ref('')//新电话
 const newEmail = ref('')//新邮箱
 const newLocation = ref('')//新地址
 
-const displayInfoCard = ref(true)
+const updateDisabled = computed(() => {
+  return !((!hasTelInput.value || isTelLegal.value) && (!hasEmailInput.value || isEmailLegal.value))
+})
+
 
 
 getUserInfo()
 function getUserInfo() {
   accountsGet(username).then((res) => {
-    avatar.value = res.data.result.avatar
-    email.value = res.data.result.email
-    location.value = res.data.result.location
-    name.value = res.data.result.name
-    tel.value = res.data.result.telephone
+    avatar.value = res.data.data.avatar
+    email.value = res.data.data.email
+    location.value = res.data.data.location
+    name.value = res.data.data.name
+    tel.value = res.data.data.telephone
   })
 }
 
@@ -45,18 +56,18 @@ function updateInfo() {
     email: newEmail.value,
     location: newLocation.value,
   }).then(res => {
-    if (res.data.code === '000') {
+    if (res.data.code === '200') {
       ElMessage({
-        customClass: 'customMessage',
-        type: 'success',
         message: '更新成功！',
+        type: 'success',
+        center: true,
       })
       getUserInfo()
-    } else if (res.data.code === '400') {
+    } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
-        customClass: 'customMessage',
-        type: 'error',
         message: res.data.msg,
+        type: 'error',
+        center: true,
       })
     }
   })
@@ -105,30 +116,47 @@ function updateInfo() {
 
     <!--    todo-->
     <el-card class="wrap">
-      <el-card v-if="displayInfoCard" class="change-card">
+      <el-card  class="change-card">
         <template #header>
           <div class="card-header">
             <span>修改个人信息</span>
-            <el-button @click="updateInfo">更新</el-button>
+            <el-button @click="updateInfo" :disabled="updateDisabled">更新</el-button>
           </div>
         </template>
 
         <el-form>
           <el-form-item>
-            <label for="name">昵称</label>
-            <el-input type="text" id="name" v-model="newName"/>
+            <label for="name">实名</label>
+            <el-input type="text" id="newName" v-model="newName"/>
           </el-form-item>
 
           <el-form-item>
-            <label for="phone">手机号</label>
-            <el-input id="phone" v-model="tel" disabled/>
+            <label v-if="!hasEmailInput" for="email">邮箱</label>
+            <label v-else-if="!isEmailLegal" for="email" class="error-warn">邮箱不合法</label>
+            <label v-else for="email">邮箱</label>
+            <el-input
+                :class="{'error-warn-input': hasEmailInput && !isEmailLegal}"
+                id = "email"
+                v-model="newEmail"
+                placeholder="请输入邮箱"
+            />
           </el-form-item>
 
-          <el-form-item v-if="role === 'CUSTOMER' || role === 'STAFF'">
+          <el-form-item>
+            <label v-if="!hasTelInput" for="telephone">手机号</label>
+            <label v-else-if="!isTelLegal" for="telephone" class="error-warn">手机号不合法</label>
+            <label v-else for="telephone">手机号</label>
+            <el-input
+                :class="{'error-warn-input': hasTelInput && !isTelLegal}"
+                id = "telephone"
+                v-model="newTel"
+                placeholder="请输入手机号"
+            />
+          </el-form-item>
+
+          <el-form-item>
             <label for="address">收货地址</label>
-            <el-input id="address" type="textarea"
-                      rows="4"
-                      v-model="location" placeholder="中华门"></el-input>
+            <el-input id="address" type="textarea" rows="3" v-model="newLocation" ></el-input>
           </el-form-item>
         </el-form>
       </el-card>
