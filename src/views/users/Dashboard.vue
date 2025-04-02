@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, computed} from 'vue'
 import {accountsGet, accountsUpdate} from '../../api/accounts.ts'
-import {parseRole} from "../../utils"
+import {parseRole} from "../../untils"
 import {router} from '../../router'
 import {UserFilled} from "@element-plus/icons-vue";
 

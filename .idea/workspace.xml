@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment=".">
+    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment="更新了register界面，增加了lab2界面">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/_prefix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/_prefix.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/products.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/products.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,9 +18,9 @@
         <option value="HTTP Request" />
         <option value="tsconfig.json" />
         <option value="HTML File" />
-        <option value="Vue Composition API Component" />
         <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
@@ -120,7 +118,9 @@
       <workItem from="1743063330742" duration="1895000" />
       <workItem from="1743066583097" duration="6161000" />
       <workItem from="1743129280218" duration="2209000" />
-      <workItem from="1743171847828" duration="1224000" />
+      <workItem from="1743171847828" duration="4242000" />
+      <workItem from="1743242972995" duration="99000" />
+      <workItem from="1743244122763" duration="3691000" />
     </task>
     <task id="LOCAL-00001" summary="new">
       <option name="closed" value="true" />
@@ -218,7 +218,31 @@
       <option name="project" value="LOCAL" />
       <updated>1743073677064</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary=".">
+      <option name="closed" value="true" />
+      <created>1743173238547</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1743173238547</updated>
+    </task>
+    <task id="LOCAL-00014" summary="lab2 接口定义">
+      <option name="closed" value="true" />
+      <created>1743173433647</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1743173433647</updated>
+    </task>
+    <task id="LOCAL-00015" summary="更新了register界面，增加了lab2界面">
+      <option name="closed" value="true" />
+      <created>1743176049396</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1743176049396</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,6 +263,8 @@
     <MESSAGE value="new" />
     <MESSAGE value="登录，注册，用户模块接口、路径" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="lab2 接口定义" />
+    <MESSAGE value="更新了register界面，增加了lab2界面" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新了register界面，增加了lab2界面" />
   </component>
 </project>
