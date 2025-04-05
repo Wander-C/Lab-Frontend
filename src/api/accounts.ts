@@ -20,6 +20,7 @@ type LoginInfo = {
 
 type UpdateInfo = {
     username: string,    // 用户名
+    password?: string,   // 密码
     name?: string,       // 真实姓名
     avatar?: string,     // 头像URL
     telephone?: string,  // 手机号， 格式必须为 1xxxxxxxxx
