@@ -45,7 +45,7 @@ function logout() {
       </el-col>
 
       <el-col :span="1" class="header-icon">
-        <router-link to="/allstore" v-slot="{navigate}">
+        <router-link to="/allproduct" v-slot="{navigate}">
           <el-icon @click="navigate" :size="35" color="white" ><el-icon-shop /></el-icon>
         </router-link>
       </el-col>

@@ -15,11 +15,14 @@ const router = createRouter({
         meta: {title: "用户注册"}
     }, {
         path: '/home',
-        redirect: '/dashboard',
+        redirect: '/allProduct',
         component: () => import('../views/Home.vue'),
         children: [{
             path: '/dashboard',
             component: () => import('../views/users/Dashboard.vue'),
+        }, {
+            path: '/allProduct',
+            component: () => import('../views/products/AllProduct.vue'),
         }]
     }]
 })

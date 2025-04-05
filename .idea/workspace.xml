@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment="更新了register界面，增加了lab2界面">
+    <list default="true" id="7a47f91a-e2b5-4368-aa1e-863d2760f0a0" name="更改" comment="更新了个人信息界面">
+      <change afterPath="$PROJECT_DIR$/src/components/ProductItem.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d5bcb237-5b86-4097-a169-ef43253a7d1e.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d5bcb237-5b86-4097-a169-ef43253a7d1e.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/components.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Headers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Headers.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/products/AllProduct.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/products/AllProduct.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +64,7 @@
     &quot;Node.js.vite.config.ts.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dyy&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Course/SEAC/Two/Lab1-示例项目启动/BlueWhale-Frontend-Lab1&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -121,6 +128,10 @@
       <workItem from="1743171847828" duration="4242000" />
       <workItem from="1743242972995" duration="99000" />
       <workItem from="1743244122763" duration="3691000" />
+      <workItem from="1743603423414" duration="1845000" />
+      <workItem from="1743645669543" duration="8267000" />
+      <workItem from="1743657350352" duration="8181000" />
+      <workItem from="1743836975581" duration="6402000" />
     </task>
     <task id="LOCAL-00001" summary="new">
       <option name="closed" value="true" />
@@ -242,7 +253,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743176049396</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="更新了个人信息界面">
+      <option name="closed" value="true" />
+      <created>1743843386929</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1743843386929</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,6 +284,7 @@
     <MESSAGE value="." />
     <MESSAGE value="lab2 接口定义" />
     <MESSAGE value="更新了register界面，增加了lab2界面" />
-    <option name="LAST_COMMIT_MESSAGE" value="更新了register界面，增加了lab2界面" />
+    <MESSAGE value="更新了个人信息界面" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新了个人信息界面" />
   </component>
 </project>
