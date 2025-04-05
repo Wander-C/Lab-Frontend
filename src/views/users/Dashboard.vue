@@ -2,7 +2,7 @@
 import {ref, computed} from 'vue'
 import {accountsGet, accountsUpdate} from '../../api/accounts.ts'
 import {parseRole} from "../../untils"
-import {UploadFilled, UserFilled} from "@element-plus/icons-vue";
+import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
 import {router} from "../../router";
 
