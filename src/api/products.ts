@@ -21,7 +21,7 @@ type productInfo = {
 }
 
 type productInfoUpdate = {
-    id: string,
+    id: number,
     title: string,
     price: number,
     rate: number,           // 评分,0~10
