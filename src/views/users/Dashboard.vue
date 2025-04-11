@@ -187,6 +187,13 @@ function updatePassword() {
           {{ location }}
         </el-descriptions-item>
       </el-descriptions>
+      <el-row :gutter="20" justify="center" style="margin-top: 20px">
+        <el-col :span="24">
+          <el-button type="primary" @click="$router.push('/allProduct')">
+            去购物
+          </el-button>
+        </el-col>
+      </el-row>
     </el-card>
 
     <el-card v-if="displayInfoCard" class="wrap">
