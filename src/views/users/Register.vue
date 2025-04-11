@@ -133,8 +133,8 @@ function handleRegister() {
               <el-form-item required>
                 <label for="role">身份(必选)</label>
                 <el-select id = "role" v-model="role" placeholder="请选择身份">
-                  <el-option value="CUSTOMER" label="顾客"/>
-                  <el-option value="MANAGER" label="管理员"/>
+                  <el-option value="user" label="顾客"/>
+                  <el-option value="admin" label="管理员"/>
                 </el-select>
               </el-form-item>
             </el-col>
