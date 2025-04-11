@@ -2,6 +2,8 @@
 import {ref, computed} from 'vue'
 import {getProductById, updateProductInfo} from '../../api/products.ts'
 import type { specificationInfo } from '../../api/products.ts'
+import {UploadFilled} from "@element-plus/icons-vue";
+import {uploadImage} from "../../api/tools.ts";
 import headers from '../../components/Headers.vue'
 
 const role = sessionStorage.getItem("role");
@@ -16,6 +18,36 @@ const description = ref('')//     description?: string,   // 描述
 const cover = ref('')//     cover?: string,         // 封面URL
 const detail = ref('')//     detail?: string,        // 详细说明
 const specifications = ref<specificationInfo[]>([])//     specification?: Set<specificationInfo>,    // 规格说明,为集合，一个商品可以对应多个规格
+
+
+
+const imageFileList = ref([])
+function uploadHttpRequest() {
+  return new XMLHttpRequest()
+}
+
+function handleRemove(){
+  cover.value = ''
+}
+
+function handleExceed() {
+  ElMessage({
+    message: '最多只能上传一张图片',
+    type: 'error',
+    center: true,
+  })
+}
+
+function handleUpload(file: any, fileList: any) {
+  imageFileList.value = fileList
+  let formData = new FormData()
+  formData.append('file', file.raw)
+  uploadImage(formData).then(res => {
+    cover.value = res.data.data
+  })
+}
+
+
 
 getProduct(Number(productId.value));
 function getProduct(id: number) {
@@ -86,6 +118,21 @@ function updateProduct() {
               fit="contain"
               class="main-image"
           />
+          <label v-if="role=='admin'" for="newCover">↓↓↓↓↓↓↓替换新封面↓↓↓↓↓↓↓</label>
+          <el-upload v-if="role=='admin'"
+              drag
+              :limit="1"
+              v-model:file-list="imageFileList"
+              :http-request="uploadHttpRequest"
+              :on-change="handleUpload"
+              :on-exceed="handleExceed"
+              :on-remove="handleRemove"
+          >
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+              Drop file here or <em>click to upload</em>
+            </div>
+          </el-upload>
         </div>
       </el-col>
 
@@ -124,12 +171,12 @@ function updateProduct() {
             <!-- 商品详情 -->
             <div class="detail-section">
               <h3>商品详情</h3>
-              <div v-if="role !== 'admin'" v-html="detail"></div>
+              <div v-if="role == 'user'" v-html="detail"></div>
               <el-input
                   v-else
                   v-model="detail"
                   type="textarea"
-                  :rows="4"
+                  :rows="10"
                   placeholder="请输入商品详情"
               />
             </div>
@@ -141,10 +188,11 @@ function updateProduct() {
       <el-col :span="10">
         <div class="spec-section">
           <h3>规格参数</h3>
-          <el-table :data="specifications" v-if="role !== 'admin'">
-            <el-table-column prop="key" label="参数名" />
-            <el-table-column prop="value" label="参数值" />
+          <el-table :data="specifications" v-if="role === ''" style="width: 100%">
+            <el-table-column prop="item" label="参数名" min-width="120"/>
+            <el-table-column prop="value" label="参数值" min-width="180"/>
           </el-table>
+
 
           <!-- 管理员编辑规格 -->
           <div v-else v-for="(spec, index) in specifications" :key="index">
@@ -165,26 +213,26 @@ function updateProduct() {
             />
           </div>
         </div>
-      </el-col>
-    </el-row>
+        <el-row v-if="role === 'admin'">
+          <el-col :span="24" style="position: relative;padding-top: 20px">
+            <el-button
+                :disabled="title==''||price==''"
+                type="primary"
+                @click="updateProduct"
+                class="save-button"
+                style="position: absolute; right: 0"
+            >
+              保存修改
+            </el-button>
+          </el-col>
+        </el-row>
 
-    <!-- 保存按钮调整到规格区域下方 -->
-    <el-row v-if="role === 'admin'">
-      <el-col :span="24">
-        <el-button
-            type="primary"
-            @click="updateProduct"
-            class="save-button"
-        >
-          保存修改
-        </el-button>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <style scoped>
-/* 新增样式调整 */
 .core-info {
   margin-top: 20px;
   padding: 15px;
@@ -205,7 +253,7 @@ function updateProduct() {
 }
 
 .product-container {
-  width: 100%;
+  width: 90%;
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ebeef5;
@@ -234,6 +282,4 @@ function updateProduct() {
     font-weight: bold;
   }
 }
-
-/* 保持原有其他样式 */
 </style>
