@@ -1,7 +1,7 @@
 // 商品模块
 import {PRODUCTS_MODULE} from "./_prefix.ts";
 import {STOCKS_MODULE} from "./_prefix.ts";
-import {axios} from "../untils/request";
+import {axios} from "../utils/request";
 
 type specificationInfo = {
     id: string,         // 规格ID
@@ -58,8 +58,8 @@ export const createProduct = (productInfo: productInfo) => {
         })
 }
 
-export const updateProductInfo = (productInfoUpdate: productInfoUpdate) => {
-    return axios.put(`${PRODUCTS_MODULE}`, productInfoUpdate,
+export const updateProductInfo = (id : number ,productInfoUpdate: productInfoUpdate) => {
+    return axios.put(`${PRODUCTS_MODULE}/${id}`, productInfoUpdate,
         {headers: {'Content-Type': 'application/json'}})
         .then(res => {
             return res
