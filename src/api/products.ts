@@ -1,7 +1,7 @@
 // 商品模块
 import {PRODUCTS_MODULE} from "./_prefix.ts";
 import {STOCKS_MODULE} from "./_prefix.ts";
-import {axios} from "../utils/request";
+import {axios} from "../untils/request";
 
 type specificationInfo = {
     id: string,         // 规格ID
