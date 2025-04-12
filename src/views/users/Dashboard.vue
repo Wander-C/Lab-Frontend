@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, computed} from 'vue'
 import {accountsGet, accountsUpdate} from '../../api/accounts.ts'
-import {parseRole} from "../../untils"
+import {parseRole} from "../../utils"
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
 import {router} from "../../router";
@@ -187,6 +187,14 @@ function updatePassword() {
           {{ location }}
         </el-descriptions-item>
       </el-descriptions>
+      <el-row :gutter="20" justify="center" style="margin-top: 20px">
+        <el-col :span="24">
+<!--          todo:仅测试，路径等待修改       -->
+          <el-button type="primary" @click="$router.push('/productDetail')">
+            去购物
+          </el-button>
+        </el-col>
+      </el-row>
     </el-card>
 
     <el-card v-if="displayInfoCard" class="wrap">
