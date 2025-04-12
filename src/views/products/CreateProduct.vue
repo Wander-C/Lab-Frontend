@@ -28,7 +28,7 @@ const isPriceLegal = computed(() => {
 })
 
 const isRateLegal = computed(() => {
-  return productRate.value != null && productRate.value >= 0 && productRate.value <= 5
+  return productRate.value != null && productRate.value >= 0 && productRate.value <= 10
 })
 
 const createDisabled = computed(() => {
