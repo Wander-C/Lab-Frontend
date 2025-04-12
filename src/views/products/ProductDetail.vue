@@ -188,7 +188,7 @@ function updateProduct() {
       <el-col :span="10">
         <div class="spec-section">
           <h3>规格参数</h3>
-          <el-table :data="specifications" v-if="role === ''" style="width: 100%">
+          <el-table :data="specifications" v-if="role === 'user'" style="width: 100%">
             <el-table-column prop="item" label="参数名" min-width="120"/>
             <el-table-column prop="value" label="参数值" min-width="180"/>
           </el-table>
