@@ -41,24 +41,46 @@ function logout() {
         <el-tag class="role-tag" size="large">{{ parseRole(role) }}版</el-tag>
       </el-col>
 
-      <el-col :span="16">
+      <el-col :span="15">
       </el-col>
 
       <el-col :span="1" class="header-icon">
-        <router-link to="/allproduct" v-slot="{navigate}">
-          <el-icon @click="navigate" :size="35" color="white" ><el-icon-shop /></el-icon>
+        <router-link v-if="parseRole(role) === '管理员'" to="/createProduct" v-slot="{navigate}">
+          <el-icon @click="navigate" :size="35" color="white" >
+            <el-tooltip content="创建商品" placement="bottom">
+              <el-icon-plus />
+            </el-tooltip>
+          </el-icon>
+        </router-link>
+      </el-col>
+
+      <el-col :span="1" class="header-icon">
+        <router-link to="/allProduct" v-slot="{navigate}">
+          <el-icon @click="navigate" :size="35" color="white" >
+            <el-tooltip content="所有商品" placement="bottom">
+              <el-icon-shop />
+            </el-tooltip>
+          </el-icon>
         </router-link>
       </el-col>
 
       <el-col :span="1" class="header-icon">
         <router-link to="/dashboard" v-slot="{navigate}">
-          <el-icon @click="navigate" :size="35" color="white" ><User /></el-icon>
+          <el-icon @click="navigate" :size="35" color="white" >
+            <el-tooltip content="个人中心" placement="bottom">
+              <User />
+            </el-tooltip>
+          </el-icon>
         </router-link>
       </el-col>
 
       <el-col :span="1" class="header-icon">
         <a @click="logout">
-          <el-icon :size="35" color="white" ><SwitchButton /></el-icon>
+          <el-icon :size="35" color="white" >
+            <el-tooltip content="退出登录" placement="bottom">
+              <SwitchButton />
+            </el-tooltip>
+          </el-icon>
         </a>
       </el-col>
     </el-row>
