@@ -1,6 +1,6 @@
 // 用户模块
 import{ACCOUNTS_MODULE} from "./_prefix";
-import {axios} from "../untils/request";
+import {axios} from "../utils/request";
 
 type RegisterInfo = {
     username: string,    // 用户名, 必须唯一
