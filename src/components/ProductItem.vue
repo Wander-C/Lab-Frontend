@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {Delete } from '@element-plus/icons-vue'
-import {deleteProductById} from "../api/products.ts";
-import {parseRole} from "../untils";
+import {deleteProductById, getStockpileById} from "../api/products.ts";
+import {parseRole} from "../utils";
+import {router} from "../router";
+import {ref} from "vue";
 const props = defineProps({
   product: Object({
     id: Number,
@@ -18,6 +20,14 @@ const productRate = props.product.rate;
 const productCover = props.product.cover;
 const productTitle = props.product.title;
 const productPrice = props.product.price;
+const productStockPileAmount = ref();
+
+getProductStockPile()
+function getProductStockPile() {
+  getStockpileById(productId).then((res) => {
+    productStockPileAmount.value = res.data.data.amount;
+  }
+  )}
 
 function isDelete() {
   ElMessageBox.confirm('确定删除该商品吗？', '提示', {
@@ -57,17 +67,15 @@ function isDelete() {
         </el-tag>
         </el-descriptions-item>
       <el-descriptions-item label="评分">
-          <el-rate
-          v-model="productRate"
-          disabled
-          show-score
-          text-color="#ff9900"
-          score-template="&nbsp; {value} 分"
-          />
+        <el-tag type="danger">
+          {{productRate}} 分
+        </el-tag>
+      </el-descriptions-item>
+
+      <el-descriptions-item label="库存">
+        {{ productStockPileAmount }}
       </el-descriptions-item>
     </el-descriptions>
-
-
   </el-card>
 </template>
 
@@ -81,7 +89,7 @@ function isDelete() {
 
 .productCover {
   width: 100%;
-  height: 200px;
+  height: 180px;
   overflow: hidden;
 }
 
