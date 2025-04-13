@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {router} from '../router'
-import {parseRole} from "../untils"
+import {parseRole} from "../utils"
 import {User, SwitchButton} from "@element-plus/icons-vue"   //图标
 
 const role = sessionStorage.getItem('role')    //登录的时候插入的
