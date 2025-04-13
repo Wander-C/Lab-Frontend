@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import {ref, computed} from 'vue'
-import {getProductById, updateProductInfo} from '../../api/products.ts'
+import {getCurrentInstance, ref} from 'vue'
+import {getProductById, updateProductInfo, getStockpileById, adjustStockpile} from '../../api/products.ts'
 import type { specificationInfo } from '../../api/products.ts'
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
-import headers from '../../components/Headers.vue'
 
 const role = sessionStorage.getItem("role");
-const productId //= sessionStorage.getItem("id")id
+const {proxy} = getCurrentInstance() as any
+const productId = Number(proxy.$route.params.productId)
 // todo:实现Storage后需修改
-= ref('1');//这是获取商品的序号
-const id=ref('')//这是规格序号
+const id = ref('')//这是规格序号
 const title = ref('')// title: string,
 const price = ref('')//     price: number,
 const rate = ref('')//     rate: number,           // 评分,0~10
@@ -19,7 +18,10 @@ const cover = ref('')//     cover?: string,         // 封面URL
 const detail = ref('')//     detail?: string,        // 详细说明
 const specifications = ref<specificationInfo[]>([])//     specification?: Set<specificationInfo>,    // 规格说明,为集合，一个商品可以对应多个规格
 
-
+const amount = ref('')
+getStockpileById(productId).then((res) => {
+  amount.value = res.data.data.amount;
+})
 
 const imageFileList = ref([])
 function uploadHttpRequest() {
@@ -49,16 +51,16 @@ function handleUpload(file: any, fileList: any) {
 
 
 
-getProduct(Number(productId.value));
-function getProduct(id: number) {
-  getProductById(id).then((res) => {
+getProduct(productId);
+function getProduct(ID: number) {
+  getProductById(ID).then((res) => {
     title.value = res.data.data.title
     price.value = res.data.data.price
     rate.value = res.data.data.rate
     description.value = res.data.data.description
     cover.value = res.data.data.cover
     detail.value = res.data.data.detail
-    specifications.value = res.data.data.specification
+    specifications.value = res.data.data.specifications
   })
 }
 
@@ -74,17 +76,18 @@ function getProduct(id: number) {
 // }
 
 function updateProduct() {
-  updateProductInfo(Number(productId.value) ,{
-    id: productId.value,
+  updateProductInfo({
+    id: productId,
     title: title.value,
     price: Number(price.value),
     rate: Number(rate.value),
     description: description.value==''?undefined:description.value,
-    cover: cover.value=='' ? undefined:cover.value,
-    detail: detail.value==''?undefined:detail.value,
-        specification: specifications.value.length > 0
-            ? new Set(specifications.value)  // 转换为Set类型
-            : undefined
+    cover: cover.value=='' ? undefined : cover.value,
+    detail: detail.value=='' ? undefined : detail.value,
+    specifications: specifications == undefined ? undefined : specifications.value,
+        // specification: (specifications.value!= undefined && specifications.value.length > 0)
+        //     ? new Set(specifications.value)  // 转换为Set类型
+        //     : undefined
   }
   ).then((res) => {
     if (res.data.code === '200') {
@@ -93,7 +96,7 @@ function updateProduct() {
         type: 'success',
         center: true,
       })
-      getProduct(Number(productId.value) );
+      getProduct(productId);
     } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
         message: res.data.msg,
@@ -103,10 +106,30 @@ function updateProduct() {
     }
   })
 }
+
+function alterStockpile() {
+  adjustStockpile({
+    productId: productId.toString(),
+    amount: Number(amount.value),
+  }).then((res) => {
+    if (res.data.code === '200') {
+      ElMessage({
+        message: '更新成功！',
+        type: 'success',
+        center: true,
+      })
+    } else if (res.data.code === '400' || res.data.code === '401') {
+      ElMessage({
+        message: res.data.msg,
+        type: 'error',
+        center: true,
+      })
+    }
+})
+}
 </script>
 
 <template>
-  <headers />
   <div class="product-container">
     <el-row :gutter="30">
       <!-- 左侧图片区域 -->
@@ -152,6 +175,20 @@ function updateProduct() {
               <el-input-number v-else v-model="price" :min="0" :precision="2"/>
             </div>
 
+            <!-- 库存 -->
+            <div class="stockpile-section">
+              <el-row>
+                <span class="stockpile-label">库存：</span>
+                <span v-if="role == 'user'" class="stockpile-value">{{ amount }}</span>
+                <el-input-number v-else  v-model="amount" :min="0" :precision="0"/>
+
+                <el-col :span="2"/>
+
+                <el-button v-if="role == 'admin'" @click="alterStockpile" type="primary">更新库存</el-button>
+              </el-row>
+
+            </div>
+
             <!-- 评分 -->
             <div class="rate-section">
               <span class="rate-label">评分：</span>
@@ -176,7 +213,7 @@ function updateProduct() {
                   v-else
                   v-model="detail"
                   type="textarea"
-                  :rows="10"
+                  :rows="7"
                   placeholder="请输入商品详情"
               />
             </div>
@@ -193,24 +230,22 @@ function updateProduct() {
             <el-table-column prop="value" label="参数值" min-width="180"/>
           </el-table>
 
-
           <!-- 管理员编辑规格 -->
           <div v-else v-for="(spec, index) in specifications" :key="index">
             <el-input
-                v-model="spec.key"
+                v-model="spec.item"
                 placeholder="参数名"
                 style="width: 30%; margin-right: 10px"
             />
             <el-input
                 v-model="spec.value"
                 placeholder="参数值"
-                style="width: 60%"
+                style="width: 55%; margin-right: 10px"
             />
             <el-button
                 type="danger"
                 @click="specifications.splice(index, 1)"
-                icon="Delete"
-            />
+                >删除</el-button>
           </div>
         </div>
         <el-row v-if="role === 'admin'">
@@ -277,6 +312,22 @@ function updateProduct() {
   }
 
   .price-value {
+    font-size: 28px;
+    color: #ff5000;
+    font-weight: bold;
+  }
+}
+
+.stockpile-section {
+  margin: 20px 0;
+
+  .stockpile-label {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #666;
+  }
+
+  .stockpile-value {
     font-size: 28px;
     color: #ff5000;
     font-weight: bold;
