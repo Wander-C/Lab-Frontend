@@ -4,11 +4,7 @@ import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
 import {createProduct} from "../../api/products.ts";
 import {router} from "../../router";
-
-type specificationInfo = {
-  item: string,       // 规格名称
-  value: string,      // 规格内容
-}
+import {specificationInfo} from "../../api/products.ts";
 
 const productTitle = ref("");
 const productPrice = ref<number>();
@@ -16,7 +12,7 @@ const productCover = ref("");
 const productRate = ref<number>();
 const productDescription = ref("");
 const productDetail = ref("");
-const productSpecification = ref(new Set<specificationInfo>());
+const productSpecification = ref<specificationInfo[]>([]);
 const imageFileList = ref([])
 
 const hasTitleInput = computed(() => productTitle.value != '');
@@ -68,7 +64,7 @@ function handleCreateProduct() {
     rate: productRate.value == null ? 0 : productRate.value,
     description: productDescription.value,
     detail: productDetail.value,
-    specification: productSpecification.value,
+    specifications: productSpecification.value,
   }).then(res => {
     if (res.data.code === '200') {
       ElMessage({
@@ -87,7 +83,6 @@ function handleCreateProduct() {
   })
 }
 
-const specificationIdCounter = ref(1)
 const specificationItem = ref("")
 const specificationValue = ref("")
 const isAddDisabled = computed(() => {
@@ -99,8 +94,8 @@ function addSpecification() {
     item: specificationItem.value,
     value: specificationValue.value,
   };
-  productSpecification.value.add(newSpecification)
-  specificationIdCounter.value++;
+  productSpecification.value.push(newSpecification)
+  //productSpecification.value.add(newSpecification)
   specificationItem.value = ""
   specificationValue.value = ""
 }
@@ -108,7 +103,8 @@ function addSpecification() {
 function handleDeleteSpecificationByItem(Item: string) {
   const specificationToDelete = Array.from(productSpecification.value).find((specification) => specification.item === Item)
   if (specificationToDelete) {
-    productSpecification.value.delete(specificationToDelete)
+    productSpecification.value.splice(productSpecification.value.indexOf(specificationToDelete), 1)
+    //productSpecification.value.delete(specificationToDelete)
   }
 }
 </script>
