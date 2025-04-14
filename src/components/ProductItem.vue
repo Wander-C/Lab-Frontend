@@ -62,8 +62,8 @@ function isDelete() {
     <h1 class="productTitle" >{{ productTitle }}</h1>
     <el-descriptions :column="1" border>
       <el-descriptions-item label="价格">
-        <el-tag type="warning">
-          {{ productPrice }}￥
+        <el-tag type="warning" class="product-price">
+          ￥{{ productPrice }}
         </el-tag>
         </el-descriptions-item>
       <el-descriptions-item label="评分">
@@ -81,7 +81,7 @@ function isDelete() {
 
 <style scoped>
 .productItem {
-  width: 300px;
+  width: 200px;
   height: 400px;
   position: relative;
   overflow: hidden;
@@ -101,11 +101,15 @@ function isDelete() {
 
 .close-icon {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   cursor: pointer;
   z-index: 10;
-  font-size: 25px;
+  font-size: 20px;
+  color: red;
+}
+
+.product-price {
   color: red;
 }
 
@@ -116,7 +120,7 @@ function isDelete() {
 }
 
 .productTitle:hover {
-  color: brown; /* 鼠标悬停时的文本颜色 */
+  color: red; /* 鼠标悬停时的文本颜色 */
   text-decoration: underline;
 }
 </style>
