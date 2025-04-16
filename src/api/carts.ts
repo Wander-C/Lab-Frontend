@@ -1,0 +1,61 @@
+import {CART_MODULE} from "./_prefix.ts";
+import {axios} from "../utils/request.ts";
+
+// 收货人信息,自定义，后续可添加
+type consigneeInfo = {
+    name: string,
+    phone: string,
+    address: string,
+    email: string,
+}
+
+// 订单信息
+type checkoutInfo = {
+    cartItemIds: string[],
+    shippingAddress: consigneeInfo,
+    payment_Method: string,
+}
+// 添加商品到购物车
+export const addProductToCart = (productId: string, quantity: number) => {
+    return axios.post(`${CART_MODULE}/`, {productId: productId, quantity: quantity},
+        {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            return res
+        }
+    )
+}
+
+// 从购物车中删除商品
+export const deleteProductFromCart = (cartItemId: string) => {
+    return axios.delete(`${CART_MODULE}/${cartItemId}`)
+        .then(res => {
+            return res
+        }
+    )
+}
+
+// 修改购物车中商品的数量
+export const updateCartItem = (cartItemId: string, quantity: number) => {
+    return axios.patch(`${CART_MODULE}/${cartItemId}`, {quantity: quantity},
+        {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            return res
+        })
+}
+
+// 获取购物车中所有商品
+export const getCartItems = () => {
+    return axios.get(`${CART_MODULE}/`)
+        .then(res => {
+            return res
+        })
+}
+
+// 提交订单
+export const checkout = (checkoutInfo: checkoutInfo) => {
+    return axios.post(`${CART_MODULE}/checkout`, checkoutInfo,
+        {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            return res
+        })
+}
