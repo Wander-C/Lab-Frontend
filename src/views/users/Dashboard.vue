@@ -189,10 +189,6 @@ function updatePassword() {
       </el-descriptions>
       <el-row :gutter="20" justify="center" style="margin-top: 20px">
         <el-col :span="24">
-<!--          todo:仅测试，路径等待修改       -->
-          <el-button type="primary" @click="$router.push('/productDetail')">
-            去购物
-          </el-button>
         </el-col>
       </el-row>
     </el-card>
