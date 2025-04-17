@@ -9,7 +9,7 @@ import {uploadImage} from "../../api/tools.ts";
 const role = sessionStorage.getItem("role");
 const {proxy} = getCurrentInstance() as any
 const productId = Number(proxy.$route.params.productId)
-const id = ref('')//这是规格序号
+
 const title = ref('')// title: string,
 const price = ref('')//     price: number,
 const rate = ref('')//     rate: number,           // 评分,0~10
@@ -19,11 +19,13 @@ const detail = ref('')//     detail?: string,        // 详细说明
 const specifications = ref<specificationInfo[]>([])//     specification?: Set<specificationInfo>,    // 规格说明,为集合，一个商品可以对应多个规格
 
 const amount = ref('')//库存量
-const addInCart = ref('')//我想加入购物车的量
+const frozen = ref('')//冻结量
+const addInCart = ref('0')//我想加入购物车的量
 const amountInCart=ref('0')//购物车中已有的量
 
 getStockpileById(productId).then((res) => {
   amount.value = res.data.data.amount;
+  frozen.value = res.data.data.frozen;
 })
 
 const imageFileList = ref([])
@@ -103,12 +105,17 @@ function alterStockpile() {
   adjustStockpile({
     productId: productId.toString(),
     amount: Number(amount.value),
+    frozen: Number(frozen.value),
   }).then((res) => {
     if (res.data.code === '200') {
       ElMessage({
-        message: '更新成功！',
+        message: '更新成功',
         type: 'success',
         center: true,
+      })
+      getStockpileById(productId).then((res) => {
+        amount.value = res.data.data.amount;
+        frozen.value = res.data.data.frozen;
       })
     } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
@@ -194,7 +201,7 @@ function upsertCartItem(){
               fit="contain"
               class="main-image"
           />
-          <label v-if="role=='admin'" for="newCover">↓↓↓↓↓↓↓替换新封面↓↓↓↓↓↓↓</label>
+          <h1 v-if="role=='admin'" for="newCover">↓↓↓↓替换新封面↓↓↓↓</h1>
           <el-upload v-if="role=='admin'"
                      drag
                      :limit="1"
@@ -236,12 +243,16 @@ function upsertCartItem(){
 
             <!-- 库存 -->
             <div class="stockpile-section">
-              <el-row>
+              <el-row style="margin-bottom: 20px;">
                 <span class="stockpile-label">库存：</span>
                 <span v-if="role == 'user'" class="stockpile-value">{{ amount }}</span>
                 <el-input-number v-else  v-model="amount" :min="0" :precision="0"/>
                 <el-col :span="2"/>
-
+              </el-row>
+              <el-row>
+                <span class="stockpile-label">冻结量：</span>
+                <el-input-number v-if="role=='admin'"  v-model="frozen" :min="0" :precision="0"/>
+                <el-col :span="2"/>
                 <el-button v-if="role == 'admin'" @click="alterStockpile" type="primary">更新库存</el-button>
               </el-row>
 
