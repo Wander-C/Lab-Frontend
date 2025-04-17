@@ -2,111 +2,119 @@
 import { ref } from 'vue';
 import {addProductToCart, deleteProductFromCart, updateCartItem, getCartItems, checkout,} from '../../api/carts.ts';
 import type {CartItem,item}from '../../api/carts.ts'
-import {getStockpileById,getProductById} from '../../api/products.ts'
+import {getStockpileById} from '../../api/products.ts'
 
+// //
+// const items: item[] = [
+//   {
+//     cartItemId: 1,
+//     productId: 101,
+//     title: "商品A",
+//     price: 99.99,
+//     description: "这是商品A的描述信息。",
+//     cover: "https://th.bing.com/th/id/OIP.YE928wcXeXYA465TQ7dV_AHaP_?w=115&h=189&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+//     detail: "这是商品A的详细信息，可以包括材质、尺寸、产地等内容。",
+//     quantity: 2, // 该商品加购数量
+//   },
+//   {
+//     cartItemId: 2,
+//     productId: 102,
+//     title: "商品B",
+//     price: 199.99,
+//     description: "这是商品B的描述信息。",
+//     cover: "https://th.bing.com/th/id/OIP.dSGTAJQTqvykec2XzchxZQHaHa?rs=1&pid=ImgDetMain",
+//     detail: "这是商品B的详细信息，可以包括材质、尺寸、产地等内容。",
+//     quantity: 1, // 该商品加购数量
+//   },
+//   {
+//     cartItemId: 3,
+//     productId: 103,
+//     title: "商品C",
+//     price: 49.99,
+//     description: "这是商品C的描述信息。",
+//     cover: "https://th.bing.com/th/id/OIP.nE5Mf4w3MWaIkK0mDSwNHgHaHa?w=174&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+//     detail: "这是商品C的详细信息，可以包括材质、尺寸、产地等内容。",
+//     quantity: 5, // 该商品加购数量
+//   },
+// ];
+//
+// const CartItems: CartItem={
+//   items:items,
+//   total:3,
+//   price:250,
+// }
 
-const items: item[] = [
-  {
-    cartItemId: 1,
-    productId: 101,
-    title: "商品A",
-    price: 99.99,
-    description: "这是商品A的描述信息。",
-    cover: "https://th.bing.com/th/id/OIP.YE928wcXeXYA465TQ7dV_AHaP_?w=115&h=189&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-    detail: "这是商品A的详细信息，可以包括材质、尺寸、产地等内容。",
-    quantity: 2, // 该商品加购数量
-  },
-  {
-    cartItemId: 2,
-    productId: 102,
-    title: "商品B",
-    price: 199.99,
-    description: "这是商品B的描述信息。",
-    cover: "https://th.bing.com/th/id/OIP.dSGTAJQTqvykec2XzchxZQHaHa?rs=1&pid=ImgDetMain",
-    detail: "这是商品B的详细信息，可以包括材质、尺寸、产地等内容。",
-    quantity: 1, // 该商品加购数量
-  },
-  {
-    cartItemId: 3,
-    productId: 103,
-    title: "商品C",
-    price: 49.99,
-    description: "这是商品C的描述信息。",
-    cover: "https://th.bing.com/th/id/OIP.nE5Mf4w3MWaIkK0mDSwNHgHaHa?w=174&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-    detail: "这是商品C的详细信息，可以包括材质、尺寸、产地等内容。",
-    quantity: 5, // 该商品加购数量
-  },
-];
+const items = ref<item[]>([])
+const total=ref(' ');//购物车一共多少件商品
+const stock=ref(Array(total).fill(0));
 
-const CartItems: CartItem={
-  items:items,
-  total:3,
-  price:250,
+fetchCartItems();
+function fetchCartItems() {
+  getCartItems().then((res) => {
+    items.value=res.data.data.items;
+    total.value=res.data.data.total;
+  })
 }
 
-const isLoading = ref(false);
+function handleQuantityChange(row: number) {
+  updateCartItem(items.value[row].cartItemId, items.value[row].quantity).then((res) => {
+    if (res.data.code === '200') {
+      ElMessage({
+        message: '更新成功！',
+        type: 'success',
+        center: true,
+      })
+      fetchCartItems();
+    } else if (res.data.code === '400' || res.data.code === '401') {
+      ElMessage({
+        message: res.data.msg,
+        type: 'error',
+        center: true,
+      })
+    }
+  })
+}//更新数量
 
-// 获取购物车数据
-// const fetchCartItems = async () => {
-//   try {
-//     isLoading.value = true;
-//     const res = await getCartItems();
-//     cartItems.value = res.data; // 假设返回的数据是一个数组
-//   } catch (error) {
-//     console.error('获取购物车数据失败:', error);
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
-//
-// // 添加商品到购物车
-// const handleAddToCart = async (productId: string, quantity: number) => {
-//   try {
-//     await addProductToCart(productId, quantity);
-//     await fetchCartItems(); // 刷新购物车数据
-//   } catch (error) {
-//     console.error('添加商品失败:', error);
-//   }
-// };
-//
-// // 删除购物车中的商品
-// const handleDeleteCartItem = async (cartItemId: string) => {
-//   try {
-//     await deleteProductFromCart(cartItemId);
-//     await fetchCartItems(); // 刷新购物车数据
-//   } catch (error) {
-//     console.error('删除商品失败:', error);
-//   }
-// };
-//
-// // 更新购物车中商品的数量
-// const handleUpdateCartItem = async (cartItemId: string, quantity: number) => {
-//   try {
-//     await updateCartItem(cartItemId, quantity);
-//     await fetchCartItems(); // 刷新购物车数据
-//   } catch (error) {
-//     console.error('更新商品数量失败:', error);
-//   }
-// };
-//
-//
-// // 页面加载时获取购物车数据
-// onMounted(() => {
-//   fetchCartItems();
-// });
+// 删除购物车中的商品
+function handleRemove(row: number) {
+  deleteProductFromCart(items.value[row].cartItemId).then((res) => {
+    if (res.data.code === '200') {
+      ElMessage({
+        message: '删除成功！',
+        type: 'success',
+        center: true,
+      })
+      fetchCartItems();
+    } else if (res.data.code === '400' || res.data.code === '401') {
+      ElMessage({
+        message: res.data.msg,
+        type: 'error',
+        center: true,
+      })
+    }
+  })
+}
+//查看库存
+
+//获取每一行的库存
+for (let row = 0; row < Number(total.value); row++) {
+  getStockpileByRow(row); // 依次获取每一行的库存
+}
+function getStockpileByRow(row: number) {
+  getStockpileById(items.value[row].productId).then((res) => {
+    stock.value[row]= res.data.data.stock;
+  })
+}
 </script>
 
 <template>
   <el-card class="box-card">
   <div class="cart-container">
     <h1>我的购物车</h1>
-
-
     <!-- 购物车为空 -->
-    <div v-if="CartItems.length === 0" class="empty-cart">
+    <div v-if="items.length === 0" class="empty-cart">
       <p>您的购物车是空的。</p>
     </div>
-
     <!-- 购物车列表 -->
     <div v-else class="cart-items">
       <el-table :data="items" style="width: 100%">
@@ -125,9 +133,9 @@ const isLoading = ref(false);
         <el-table-column prop="description" label="描述" width="150" />
         <el-table-column prop="detail" label="详细信息" width="180" />
         <el-table-column prop="price" label="单价" width="150" />
-        <el-table-column prop="quantity" label="数量" width="200" >
+        <el-table-column prop="quantity" label="修改数量" width="200" >
           <template #default="scope">
-            <el-input-number v-model="scope.row.quantity"></el-input-number>
+            <el-input-number v-model="scope.row.quantity" :min="1" :max="Number(stock[scope.row])" :controls-position="'right'" :disabled-input="true" @change="handleQuantityChange(scope.row)"></el-input-number>
           </template>
         </el-table-column>
         <el-table-column label="小计" width="120">
@@ -136,8 +144,9 @@ const isLoading = ref(false);
           </template>
         </el-table-column>
         <el-table-column label="操作"width="120">
-          <el-button type="text" >修改数量</el-button>
-          <el-button type="text" style="color: red;">删除商品</el-button>
+          <template #default="scope">
+            <el-button type="text" style="color: red;" @click="handleRemove(scope.row)">删除商品</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
