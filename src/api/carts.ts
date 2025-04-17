@@ -15,6 +15,22 @@ type checkoutInfo = {
     shippingAddress: consigneeInfo,
     payment_Method: string,
 }
+type item={
+    cartItemId: number,
+    productId: number,
+    title: string,
+    price: number,
+    description: string,
+    cover: string,
+    detail: string,
+    quantity: number, //该商品加购数量
+}
+
+type CartItem = {
+    items: item[],
+    total: number,
+    totalAmount: number,
+}
 // 添加商品到购物车
 export const addProductToCart = (productId: string, quantity: number) => {
     return axios.post(`${CART_MODULE}/`, {productId: productId, quantity: quantity},
