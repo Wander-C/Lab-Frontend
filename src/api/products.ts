@@ -32,6 +32,7 @@ type productInfoUpdate = {
 type stockpileInfo = {
     productId: string,  // 商品ID
     amount: number,     // 库存数量
+    frozen: number,     //冻结数量
 }
 
 export const getAllProduct = () => {
@@ -72,7 +73,7 @@ export const deleteProductById = (id: number) => {
 }
 
 export const adjustStockpile = (stockpileInfo: stockpileInfo) => {
-    return axios.patch(`${STOCKS_MODULE}/${stockpileInfo.productId}`, { amount: stockpileInfo.amount },
+    return axios.patch(`${STOCKS_MODULE}/${stockpileInfo.productId}`, { amount: stockpileInfo.amount ,frozen: stockpileInfo.frozen },
         {headers: {'Content-Type': 'application/json'}})
         .then(res => {
             return res
