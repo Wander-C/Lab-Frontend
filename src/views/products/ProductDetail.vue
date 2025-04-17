@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {getCurrentInstance, ref} from 'vue'
 import {getProductById, updateProductInfo, getStockpileById, adjustStockpile} from '../../api/products.ts'
+import {addProductToCart, getCartItems,updateCartItem} from "../../api/carts.ts";
 import type { specificationInfo } from '../../api/products.ts'
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
@@ -8,7 +9,6 @@ import {uploadImage} from "../../api/tools.ts";
 const role = sessionStorage.getItem("role");
 const {proxy} = getCurrentInstance() as any
 const productId = Number(proxy.$route.params.productId)
-// todo:实现Storage后需修改
 const id = ref('')//这是规格序号
 const title = ref('')// title: string,
 const price = ref('')//     price: number,
@@ -18,7 +18,10 @@ const cover = ref('')//     cover?: string,         // 封面URL
 const detail = ref('')//     detail?: string,        // 详细说明
 const specifications = ref<specificationInfo[]>([])//     specification?: Set<specificationInfo>,    // 规格说明,为集合，一个商品可以对应多个规格
 
-const amount = ref('')
+const amount = ref('')//库存量
+const addInCart = ref('')//我想加入购物车的量
+const amountInCart=ref('0')//购物车中已有的量
+
 getStockpileById(productId).then((res) => {
   amount.value = res.data.data.amount;
 })
@@ -53,42 +56,31 @@ function handleUpload(file: any, fileList: any) {
 
 getProduct(productId);
 function getProduct(ID: number) {
-  getProductById(ID).then((res) => {
-    title.value = res.data.data.title
-    price.value = res.data.data.price
-    rate.value = res.data.data.rate
-    description.value = res.data.data.description
-    cover.value = res.data.data.cover
-    detail.value = res.data.data.detail
-    specifications.value = res.data.data.specifications
+  getProductById(ID).then((res) => {//   id: string,
+    title.value = res.data.data.title//   title: string,
+    price.value = res.data.data.price//   price: number,
+    rate.value = res.data.data.rate//   rate: number,           // 评分,0~10
+    description.value = res.data.data.description//   description?: string,   // 描述
+    cover.value = res.data.data.cover//   cover?: string,         // 封面URL
+    detail.value = res.data.data.detail//   detail?: string,        // 详细说明
+    specifications.value = res.data.data.specifications//   specification?: Set<specificationInfo>,    // 规格说明
   })
 }
 
-// type productInfoUpdate = {
-//   id: string,
-//   title: string,
-//   price: number,
-//   rate: number,           // 评分,0~10
-//   description?: string,   // 描述
-//   cover?: string,         // 封面URL
-//   detail?: string,        // 详细说明
-//   specification?: Set<specificationInfo>,    // 规格说明
-// }
-
 function updateProduct() {
   updateProductInfo({
-    id: productId,
-    title: title.value,
-    price: Number(price.value),
-    rate: Number(rate.value),
-    description: description.value==''?undefined:description.value,
-    cover: cover.value=='' ? undefined : cover.value,
-    detail: detail.value=='' ? undefined : detail.value,
-    specifications: specifications == undefined ? undefined : specifications.value,
+        id: productId,
+        title: title.value,
+        price: Number(price.value),
+        rate: Number(rate.value),
+        description: description.value==''?undefined:description.value,
+        cover: cover.value=='' ? undefined : cover.value,
+        detail: detail.value=='' ? undefined : detail.value,
+        specifications: specifications == undefined ? undefined : specifications.value,
         // specification: (specifications.value!= undefined && specifications.value.length > 0)
         //     ? new Set(specifications.value)  // 转换为Set类型
         //     : undefined
-  }
+      }
   ).then((res) => {
     if (res.data.code === '200') {
       ElMessage({
@@ -125,8 +117,69 @@ function alterStockpile() {
         center: true,
       })
     }
-})
+  })
 }
+
+getAmountInCart();
+function getAmountInCart() {
+  getCartItems() // 首先获取购物车中的所有商品
+      .then(cartResponse => {
+        const cartItems = cartResponse.data;
+        // 查找是否已经存在相同 productId 的商品
+        const existingItem = cartItems.find((item: { productId: string }) => item.productId === productId.toString());
+        if (existingItem) {
+          // 如果商品已经存在，更新数量
+          amount.value = existingItem.amount;
+        }
+      })
+}
+
+// 添加或修改购物车中商品的数量
+function upsertCartItem(){
+  getCartItems().then(cartResponse => {
+    const cartItems = cartResponse.data; // 返回的数据是一个数组，包含购物车中的所有商品
+    // 查找是否已经存在相同 productId 的商品
+    const existingItem = cartItems.find((item: { productId: string }) => item.productId === productId.toString());
+    if (existingItem) {
+      // 如果商品已经存在，更新其数量
+      const cartItemId = existingItem.id;
+      updateCartItem(cartItemId, Number(amountInCart.value)+Number(addInCart.value)).then((res) => {
+        if (res.data.code === '200') {
+          ElMessage({
+            message: '更新成功！',
+            type: 'success',
+            center: true,
+          })
+          getProduct(productId);
+        } else if (res.data.code === '400' || res.data.code === '401') {
+          ElMessage({
+            message: res.data.msg,
+            type: 'error',
+            center: true,
+          })
+        }
+      })
+    } else {
+      // 如果商品不存在，添加到购物车
+      addProductToCart(productId.toString(), Number(addInCart.value)).then((res) => {
+        if (res.data.code === '200') {
+          ElMessage({
+            message: '更新成功！',
+            type: 'success',
+            center: true,
+          })
+        } else if (res.data.code === '400' || res.data.code === '401') {
+          ElMessage({
+            message: res.data.msg,
+            type: 'error',
+            center: true,
+          })
+        }
+      })
+    }
+  })
+}
+
 </script>
 
 <template>
@@ -143,19 +196,25 @@ function alterStockpile() {
           />
           <label v-if="role=='admin'" for="newCover">↓↓↓↓↓↓↓替换新封面↓↓↓↓↓↓↓</label>
           <el-upload v-if="role=='admin'"
-              drag
-              :limit="1"
-              v-model:file-list="imageFileList"
-              :http-request="uploadHttpRequest"
-              :on-change="handleUpload"
-              :on-exceed="handleExceed"
-              :on-remove="handleRemove"
+                     drag
+                     :limit="1"
+                     v-model:file-list="imageFileList"
+                     :http-request="uploadHttpRequest"
+                     :on-change="handleUpload"
+                     :on-exceed="handleExceed"
+                     :on-remove="handleRemove"
           >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
             <div class="el-upload__text">
               Drop file here or <em>click to upload</em>
             </div>
           </el-upload>
+          <el-card v-if="role=='user'">
+            <div style="display: flex; gap: 10px">
+            <el-input-number v-model="addInCart" :min="0"  :max="Number(amount)-Number(amountInCart)"  :precision="0"/>
+            <el-button type="primary" @click="upsertCartItem">加入购物车</el-button>
+            </div>
+          </el-card>
         </div>
       </el-col>
 
@@ -181,7 +240,6 @@ function alterStockpile() {
                 <span class="stockpile-label">库存：</span>
                 <span v-if="role == 'user'" class="stockpile-value">{{ amount }}</span>
                 <el-input-number v-else  v-model="amount" :min="0" :precision="0"/>
-
                 <el-col :span="2"/>
 
                 <el-button v-if="role == 'admin'" @click="alterStockpile" type="primary">更新库存</el-button>
@@ -245,7 +303,7 @@ function alterStockpile() {
             <el-button
                 type="danger"
                 @click="specifications.splice(index, 1)"
-                >删除</el-button>
+            >删除</el-button>
           </div>
         </div>
         <el-row v-if="role === 'admin'">
