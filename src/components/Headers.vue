@@ -41,14 +41,24 @@ function logout() {
         <el-tag class="role-tag" size="large">{{ parseRole(role) }}版</el-tag>
       </el-col>
 
-      <el-col :span="14">
+      <el-col :span="15">
       </el-col>
 
-      <el-col :span="1" class="header-icon">
-        <router-link v-if="parseRole(role) === '管理员'" to="/createProduct" v-slot="{navigate}">
+      <el-col :span="1" v-if="role=='admin'" class="header-icon">
+        <router-link  to="/createProduct" v-slot="{navigate}">
           <el-icon @click="navigate" :size="35" color="white" >
             <el-tooltip content="创建商品" placement="bottom">
               <el-icon-plus />
+            </el-tooltip>
+          </el-icon>
+        </router-link>
+      </el-col>
+
+      <el-col :span="1" v-if="role=='user'" class="header-icon">
+        <router-link   to="/cart" v-slot="{ navigate }">
+          <el-icon @click="navigate" :size="35" color="white">
+            <el-tooltip content="购物车" placement="bottom">
+              <el-icon-shopping-cart-full /> <!-- 购物车图标 -->
             </el-tooltip>
           </el-icon>
         </router-link>
@@ -59,16 +69,6 @@ function logout() {
           <el-icon @click="navigate" :size="35" color="white" >
             <el-tooltip content="所有商品" placement="bottom">
               <el-icon-shop />
-            </el-tooltip>
-          </el-icon>
-        </router-link>
-      </el-col>
-
-      <el-col :span="1" class="header-icon">
-        <router-link to="/cart" v-slot="{ navigate }">
-          <el-icon @click="navigate" :size="35" color="white">
-            <el-tooltip content="购物车" placement="bottom">
-              <el-icon-shopping-cart-full /> <!-- 购物车图标 -->
             </el-tooltip>
           </el-icon>
         </router-link>
