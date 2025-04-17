@@ -111,7 +111,7 @@ const isLoading = ref(false);
     <div v-else class="cart-items">
       <el-table :data="items" style="width: 100%">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="cover" label="封面" width="120">
+        <el-table-column prop="cover" label="封面" width="150">
           <template #default="scope">
             <el-image
                 :src="scope.row.cover"
@@ -122,9 +122,9 @@ const isLoading = ref(false);
           </template>
         </el-table-column>
         <el-table-column prop="title" label="书名" width="120" />
-        <el-table-column prop="description" label="描述" width="120" />
-        <el-table-column prop="detail" label="详细信息" width="150" />
-        <el-table-column prop="price" label="单价" width="120" />
+        <el-table-column prop="description" label="描述" width="150" />
+        <el-table-column prop="detail" label="详细信息" width="180" />
+        <el-table-column prop="price" label="单价" width="150" />
         <el-table-column prop="quantity" label="数量" width="200" >
           <template #default="scope">
             <el-input-number v-model="scope.row.quantity"></el-input-number>
@@ -135,9 +135,13 @@ const isLoading = ref(false);
             {{ (scope.row.quantity * scope.row.price).toFixed(2) }}
           </template>
         </el-table-column>
+        <el-table-column label="操作"width="120">
+          <el-button type="text" >修改数量</el-button>
+          <el-button type="text" style="color: red;">删除商品</el-button>
+        </el-table-column>
       </el-table>
     </div>
-<!--     结算按钮 -->
+<!--   结算按钮 -->
     <div v-if="items.length > 0" class="submit">
       <el-button type="primary" >提交订单</el-button>
     </div>
