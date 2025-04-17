@@ -20,7 +20,7 @@ const specifications = ref<specificationInfo[]>([])//     specification?: Set<sp
 
 const amount = ref('')//库存量
 const frozen = ref('')//冻结量
-const addInCart = ref('0')//我想加入购物车的量
+const addInCart = ref('1')//我想加入购物车的量
 const amountInCart=ref('0')//购物车中已有的量
 
 getStockpileById(productId).then((res) => {
@@ -157,7 +157,7 @@ function upsertCartItem(){
             type: 'success',
             center: true,
           })
-          getProduct(productId);
+          getAmountInCart();
         } else if (res.data.code === '400' || res.data.code === '401') {
           ElMessage({
             message: res.data.msg,
@@ -175,6 +175,7 @@ function upsertCartItem(){
             type: 'success',
             center: true,
           })
+          getAmountInCart();
         } else if (res.data.code === '400' || res.data.code === '401') {
           ElMessage({
             message: res.data.msg,
