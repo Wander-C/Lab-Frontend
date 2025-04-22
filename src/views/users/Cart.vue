@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import {addProductToCart, deleteProductFromCart, updateCartItem, getCartItems} from '../../api/carts.ts';
 import type {Cart,item}from '../../api/carts.ts'
-import {getStockpileById,getProductById} from '../../api/products.ts'
 import {router} from "../../router";
 
 const CartItems = ref<item[]>([])
