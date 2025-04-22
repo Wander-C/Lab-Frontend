@@ -6,16 +6,15 @@ type consigneeInfo = {
     name: string,
     phone: string,
     address: string,
-    email: string,
 }
 
 // 订单信息
 type checkoutInfo = {
-    cartItemIds: string[],
-    shippingAddress: consigneeInfo,
-    payment_Method: string,
+    cartItemIds: number[],
+    shipping_address: consigneeInfo,
+    payment_method: string,
 }
-type item={
+export type item ={
     cartItemId: number,
     productId: number,
     title: string,
@@ -26,7 +25,7 @@ type item={
     quantity: number, //该商品加购数量
 }
 
-type CartItem = {
+export type Cart = {
     items: item[],
     total: number,
     totalAmount: number,

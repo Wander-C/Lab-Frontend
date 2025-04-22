@@ -24,6 +24,17 @@ function logout() {
     router.push({path: "/login"})
   })
 }
+
+function handCommand(command: string) {
+  switch (command) {
+    case "创建商品":
+      router.push({path: "/createProduct"})
+          break;
+    case "创建广告":
+      router.push({path: "/createAdvertisement"})
+          break;
+  }
+}
 </script>
 
 
@@ -41,34 +52,47 @@ function logout() {
         <el-tag class="role-tag" size="large">{{ parseRole(role) }}版</el-tag>
       </el-col>
 
-      <el-col :span="15">
+      <el-col :span="14">
       </el-col>
 
-      <el-col :span="1" v-if="role=='admin'" class="header-icon">
-        <router-link  to="/createProduct" v-slot="{navigate}">
-          <el-icon @click="navigate" :size="35" color="white" >
-            <el-tooltip content="创建商品" placement="bottom">
-              <el-icon-plus />
-            </el-tooltip>
+      <el-col :span="1" class="header-icon">
+        <el-dropdown placement="bottom" @command="handCommand">
+          <el-icon :size="35" color="white">
+            <el-icon-plus />
           </el-icon>
-        </router-link>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="创建商品">创建商品</el-dropdown-item>
+                <el-dropdown-item command="创建广告">创建广告</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+        </el-dropdown>
       </el-col>
-
-      <el-col :span="1" v-if="role=='user'" class="header-icon">
-        <router-link   to="/cart" v-slot="{ navigate }">
-          <el-icon @click="navigate" :size="35" color="white">
-            <el-tooltip content="购物车" placement="bottom">
-              <el-icon-shopping-cart-full /> <!-- 购物车图标 -->
-            </el-tooltip>
-          </el-icon>
-        </router-link>
-      </el-col>
+<!--      <el-col :span="1" class="header-icon">-->
+<!--        <router-link v-if="parseRole(role) === '管理员'" to="/createProduct" v-slot="{navigate}">-->
+<!--          <el-icon @click="navigate" :size="35" color="white" >-->
+<!--            <el-tooltip content="创建商品" placement="bottom">-->
+<!--              <el-icon-plus />-->
+<!--            </el-tooltip>-->
+<!--          </el-icon>-->
+<!--        </router-link>-->
+<!--      </el-col>-->
 
       <el-col :span="1" class="header-icon">
         <router-link to="/allProduct" v-slot="{navigate}">
           <el-icon @click="navigate" :size="35" color="white" >
             <el-tooltip content="所有商品" placement="bottom">
               <el-icon-shop />
+            </el-tooltip>
+          </el-icon>
+        </router-link>
+      </el-col>
+
+      <el-col :span="1" class="header-icon">
+        <router-link to="/cart" v-slot="{ navigate }">
+          <el-icon @click="navigate" :size="35" color="white">
+            <el-tooltip content="购物车" placement="bottom">
+              <el-icon-shopping-cart-full /> <!-- 购物车图标 -->
             </el-tooltip>
           </el-icon>
         </router-link>

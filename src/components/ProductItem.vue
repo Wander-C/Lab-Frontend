@@ -21,11 +21,13 @@ const productCover = props.product.cover;
 const productTitle = props.product.title;
 const productPrice = props.product.price;
 const productStockPileAmount = ref();
+const productStockPileFrozen = ref();
 
 getProductStockPile()
 function getProductStockPile() {
   getStockpileById(productId).then((res) => {
     productStockPileAmount.value = res.data.data.amount;
+    productStockPileFrozen.value = res.data.data.frozen;
   }
   )}
 
@@ -72,8 +74,8 @@ function isDelete() {
         </el-tag>
       </el-descriptions-item>
 
-      <el-descriptions-item label="库存">
-        {{ productStockPileAmount }}
+      <el-descriptions-item label="可用库存">
+        {{productStockPileAmount-productStockPileFrozen}}
       </el-descriptions-item>
     </el-descriptions>
   </el-card>

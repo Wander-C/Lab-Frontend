@@ -3,6 +3,7 @@ import {getCurrentInstance, ref} from 'vue'
 import {getProductById, updateProductInfo, getStockpileById, adjustStockpile} from '../../api/products.ts'
 import {addProductToCart, getCartItems,updateCartItem} from "../../api/carts.ts";
 import type { specificationInfo } from '../../api/products.ts'
+import type {item} from "../../api/carts.ts";
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
 
@@ -20,12 +21,14 @@ const specifications = ref<specificationInfo[]>([])//     specification?: Set<sp
 
 const amount = ref('')//库存量
 const frozen = ref('')//冻结量
+const available = ref()// 可用库存
 const addInCart = ref('1')//我想加入购物车的量
 const amountInCart=ref('0')//购物车中已有的量
 
 getStockpileById(productId).then((res) => {
   amount.value = res.data.data.amount;
   frozen.value = res.data.data.frozen;
+  available.value = res.data.data.amount - res.data.data.frozen;
 })
 
 const imageFileList = ref([])
@@ -105,7 +108,6 @@ function alterStockpile() {
   adjustStockpile({
     productId: productId.toString(),
     amount: Number(amount.value),
-    frozen: Number(frozen.value),
   }).then((res) => {
     if (res.data.code === '200') {
       ElMessage({
@@ -115,7 +117,6 @@ function alterStockpile() {
       })
       getStockpileById(productId).then((res) => {
         amount.value = res.data.data.amount;
-        frozen.value = res.data.data.frozen;
       })
     } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
@@ -131,12 +132,12 @@ getAmountInCart();
 function getAmountInCart() {
   getCartItems() // 首先获取购物车中的所有商品
       .then(cartResponse => {
-        const cartItems = cartResponse.data;
+        const cartItems = cartResponse.data.data;
         // 查找是否已经存在相同 productId 的商品
-        const existingItem = cartItems.find((item: { productId: string }) => item.productId === productId.toString());
+        const existingItem = cartItems.find((item: item) => item.productId === productId);
         if (existingItem) {
           // 如果商品已经存在，更新数量
-          amount.value = existingItem.amount;
+          amountInCart.value = existingItem.quantity;
         }
       })
 }
@@ -144,12 +145,12 @@ function getAmountInCart() {
 // 添加或修改购物车中商品的数量
 function upsertCartItem(){
   getCartItems().then(cartResponse => {
-    const cartItems = cartResponse.data; // 返回的数据是一个数组，包含购物车中的所有商品
+    const cartItems = cartResponse.data.data; // 返回的数据是一个数组，包含购物车中的所有商品
     // 查找是否已经存在相同 productId 的商品
-    const existingItem = cartItems.find((item: { productId: string }) => item.productId === productId.toString());
+    const existingItem = cartItems.find((item: item) => item.productId === productId);
     if (existingItem) {
       // 如果商品已经存在，更新其数量
-      const cartItemId = existingItem.id;
+      const cartItemId = existingItem.cartItemId;
       updateCartItem(cartItemId, Number(amountInCart.value)+Number(addInCart.value)).then((res) => {
         if (res.data.code === '200') {
           ElMessage({
@@ -219,7 +220,7 @@ function upsertCartItem(){
           </el-upload>
           <el-card v-if="role=='user'">
             <div style="display: flex; gap: 10px">
-            <el-input-number v-model="addInCart" :min="0"  :max="Number(amount)-Number(amountInCart)"  :precision="0"/>
+            <el-input-number v-model="addInCart" :min="0"  :max="Number(available)-Number(amountInCart)"  :precision="0"/>
             <el-button type="primary" @click="upsertCartItem">加入购物车</el-button>
             </div>
           </el-card>
@@ -249,11 +250,6 @@ function upsertCartItem(){
                 <span v-if="role == 'user'" class="stockpile-value">{{ amount }}</span>
                 <el-input-number v-else  v-model="amount" :min="0" :precision="0"/>
                 <el-col :span="2"/>
-              </el-row>
-              <el-row>
-                <span class="stockpile-label">冻结量：</span>
-                <el-input-number v-if="role=='admin'"  v-model="frozen" :min="0" :precision="0"/>
-                <el-col :span="2"/>
                 <el-button v-if="role == 'admin'" @click="alterStockpile" type="primary">更新库存</el-button>
               </el-row>
 
@@ -271,7 +267,7 @@ function upsertCartItem(){
                   v-else
                   v-model="description"
                   type="textarea"
-                  :rows="4"
+                  :rows="6"
                   placeholder="请输入商品介绍"
               />
             </div>
@@ -283,7 +279,7 @@ function upsertCartItem(){
                   v-else
                   v-model="detail"
                   type="textarea"
-                  :rows="7"
+                  :rows="9"
                   placeholder="请输入商品详情"
               />
             </div>

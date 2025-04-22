@@ -8,6 +8,3 @@ export const payOrder = (orderId: number) => {
             return res
         })
 }
-
-// 支付回调处理
-export const notifyOrder = () => {}

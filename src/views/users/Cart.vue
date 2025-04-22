@@ -1,85 +1,56 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import {addProductToCart, deleteProductFromCart, updateCartItem, getCartItems, checkout,} from '../../api/carts.ts';
-import type {CartItem,item}from '../../api/carts.ts'
+import { ref, onMounted } from 'vue';
+import {addProductToCart, deleteProductFromCart, updateCartItem, getCartItems} from '../../api/carts.ts';
+import type {Cart,item}from '../../api/carts.ts'
 import {getStockpileById,getProductById} from '../../api/products.ts'
+import {router} from "../../router";
 
-
-const items: item[] = [
-  {
-    cartItemId: 1,
-    productId: 101,
-    title: "商品A",
-    price: 99.99,
-    description: "这是商品A的描述信息。",
-    cover: "https://th.bing.com/th/id/OIP.YE928wcXeXYA465TQ7dV_AHaP_?w=115&h=189&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-    detail: "这是商品A的详细信息，可以包括材质、尺寸、产地等内容。",
-    quantity: 2, // 该商品加购数量
-  },
-  {
-    cartItemId: 2,
-    productId: 102,
-    title: "商品B",
-    price: 199.99,
-    description: "这是商品B的描述信息。",
-    cover: "https://th.bing.com/th/id/OIP.dSGTAJQTqvykec2XzchxZQHaHa?rs=1&pid=ImgDetMain",
-    detail: "这是商品B的详细信息，可以包括材质、尺寸、产地等内容。",
-    quantity: 1, // 该商品加购数量
-  },
-  {
-    cartItemId: 3,
-    productId: 103,
-    title: "商品C",
-    price: 49.99,
-    description: "这是商品C的描述信息。",
-    cover: "https://th.bing.com/th/id/OIP.nE5Mf4w3MWaIkK0mDSwNHgHaHa?w=174&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-    detail: "这是商品C的详细信息，可以包括材质、尺寸、产地等内容。",
-    quantity: 5, // 该商品加购数量
-  },
-];
-
-const CartItems: CartItem={
-  items:items,
-  total:3,
-  price:250,
-}
+const CartItems = ref<item[]>([])
+const totalAmount = ref(0);
+const selectedItems = ref<item[]>([]);
 
 const isLoading = ref(false);
 
-// 获取购物车数据
-// const fetchCartItems = async () => {
-//   try {
-//     isLoading.value = true;
-//     const res = await getCartItems();
-//     cartItems.value = res.data; // 假设返回的数据是一个数组
-//   } catch (error) {
-//     console.error('获取购物车数据失败:', error);
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
-//
-// // 添加商品到购物车
-// const handleAddToCart = async (productId: string, quantity: number) => {
-//   try {
-//     await addProductToCart(productId, quantity);
-//     await fetchCartItems(); // 刷新购物车数据
-//   } catch (error) {
-//     console.error('添加商品失败:', error);
-//   }
-// };
-//
-// // 删除购物车中的商品
-// const handleDeleteCartItem = async (cartItemId: string) => {
-//   try {
-//     await deleteProductFromCart(cartItemId);
-//     await fetchCartItems(); // 刷新购物车数据
-//   } catch (error) {
-//     console.error('删除商品失败:', error);
-//   }
-// };
-//
-// // 更新购物车中商品的数量
+const handleSelectChange = (selection: item[]) => {
+  selectedItems.value = selection;
+  totalAmount.value = selectedItems.value.reduce((total, item) => total + item.price * item.quantity, 0);
+}
+
+//获取购物车数据
+const fetchCartItems = async () => {
+  try {
+    isLoading.value = true;
+    const res = await getCartItems();
+    CartItems.value = res.data.data; // 假设返回的数据是一个数组
+
+  } catch (error) {
+    console.error('获取购物车数据失败:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// 添加商品到购物车
+const handleAddToCart = async (productId: string, quantity: number) => {
+  try {
+    await addProductToCart(productId, quantity);
+    await fetchCartItems(); // 刷新购物车数据
+  } catch (error) {
+    console.error('添加商品失败:', error);
+  }
+};
+
+// 删除购物车中的商品
+const handleDeleteCartItem = async (cartItemId: string) => {
+  try {
+    await deleteProductFromCart(cartItemId);
+    await fetchCartItems(); // 刷新购物车数据
+  } catch (error) {
+    console.error('删除商品失败:', error);
+  }
+};
+
+// 更新购物车中商品的数量
 // const handleUpdateCartItem = async (cartItemId: string, quantity: number) => {
 //   try {
 //     await updateCartItem(cartItemId, quantity);
@@ -88,12 +59,43 @@ const isLoading = ref(false);
 //     console.error('更新商品数量失败:', error);
 //   }
 // };
-//
-//
-// // 页面加载时获取购物车数据
-// onMounted(() => {
-//   fetchCartItems();
-// });
+const handleUpdateCartItem = async (cartItemId: string, quantity: number) => {
+  updateCartItem(cartItemId, quantity) .then((res) => {
+    if (res.data.code === '200') {
+      ElMessage({
+        message: '修改成功！',
+        type: 'success',
+        center: true,
+      })
+    } else if (res.data.code === '400' || res.data.code === '401') {
+      ElMessage({
+        message: res.data.msg,
+        type: 'error',
+        center: true,
+      })
+    }
+})
+}
+
+const createOrder = () => {
+  if (selectedItems.value.length === 0) {
+    ElMessage({
+      message: '请选择商品进行结算！',
+      type: 'error',
+      center: true,
+    })
+    return
+  }
+  sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems.value))
+  router.push({
+    path: '/orderDetail',
+  })
+}
+
+// 页面加载时获取购物车数据
+onMounted(() => {
+  fetchCartItems();
+});
 </script>
 
 <template>
@@ -109,7 +111,7 @@ const isLoading = ref(false);
 
     <!-- 购物车列表 -->
     <div v-else class="cart-items">
-      <el-table :data="items" style="width: 100%">
+      <el-table :data="CartItems" style="width: 100%" @selection-change="handleSelectChange">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="cover" label="封面" width="150">
           <template #default="scope">
@@ -136,15 +138,19 @@ const isLoading = ref(false);
           </template>
         </el-table-column>
         <el-table-column label="操作"width="120">
-          <el-button type="text" >修改数量</el-button>
-          <el-button type="text" style="color: red;">删除商品</el-button>
+          <template #default="scope">
+            <el-button type="text" @click="handleUpdateCartItem(scope.row.cartItemId, scope.row.quantity)">修改数量</el-button>
+            <el-button type="text" style="color: red;" @click="handleDeleteCartItem(scope.row.cartItemId)">删除商品</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
 <!--   结算按钮 -->
-    <div v-if="items.length > 0" class="submit">
-      <el-button type="primary" >提交订单</el-button>
+    <div v-if="CartItems.length > 0" class="submit">
+      <span class="total-price">总价：￥{{ totalAmount }}</span>
+      <el-button type="primary" @click="createOrder">去结算</el-button>
     </div>
+
   </div>
   </el-card>
 </template>
@@ -199,9 +205,15 @@ const isLoading = ref(false);
   align-items: center;
 }
 
-
 .submit{
   margin-top: 20px;
-  text-align: center;
+  text-align: end;
+}
+
+.total-price {
+  margin-right: 440px;
+  font-weight: bold;
+  font-size: 18px;
+  color: red;
 }
 </style>
