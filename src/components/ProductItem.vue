@@ -41,11 +41,22 @@ function isDelete() {
     roundButton: true,
     center: true,
   }).then(() => {
-    deleteProductById(productId);
-    ElMessage({
-      message: '删除成功',
-      type: 'success',
+    deleteProductById(productId).then((res) => {
+      if (res.data.code === '200') {
+        ElMessage({
+          message: '删除成功',
+          type: 'success',
+          center: true,
+        })
+      } else if (res.data.code === '400' || res.data.code === '401') {
+        ElMessage({
+          message: res.data.msg,
+          type: 'error',
+          center: true,
+        })
+      }
     })
+
   })
 }
 
