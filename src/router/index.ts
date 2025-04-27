@@ -38,6 +38,9 @@ const router = createRouter({
         }, {
             path: '/orderDetail',
             component: () => import('../views/orders/OrderDetail.vue'),
+        }, {
+            path: '/advertisementDetail/:adId',
+            component: () => import('../views/advertisement/AdvertisementDetail.vue'),
         }]
     }]
 })
