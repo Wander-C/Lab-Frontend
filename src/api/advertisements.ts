@@ -49,3 +49,11 @@ export const deleteAdvertisementById = (id: number) => {
             return res
         })
 }
+
+// 获取指定广告信息
+export const getAdvertisementById = (id: number) => {
+    return axios.get(`${ADVERTISEMENTS_MODULE}/${id}`)
+        .then(res => {
+            return res
+        })
+}
