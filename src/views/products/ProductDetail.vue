@@ -2,10 +2,14 @@
 import {getCurrentInstance, ref} from 'vue'
 import {getProductById, updateProductInfo, getStockpileById, adjustStockpile} from '../../api/products.ts'
 import {addProductToCart, getCartItems,updateCartItem} from "../../api/carts.ts";
+import {getCommentsByProductId} from "../../api/comment.ts";
 import type { specificationInfo } from '../../api/products.ts'
 import type {item} from "../../api/carts.ts";
+import type{commentInfo}from "../../api/comment.ts"
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
+import {router} from "../../router";
+import AllComments from "./AllComments.vue";
 
 const role = sessionStorage.getItem("role");
 const {proxy} = getCurrentInstance() as any
@@ -25,11 +29,16 @@ const available = ref()// 可用库存
 const addInCart = ref('1')//我想加入购物车的量
 const amountInCart=ref('0')//购物车中已有的量
 
+
+
+
+
 getStockpileById(productId).then((res) => {
   amount.value = res.data.data.amount;
   frozen.value = res.data.data.frozen;
   available.value = res.data.data.amount - res.data.data.frozen;
 })
+
 
 const imageFileList = ref([])
 function uploadHttpRequest() {
@@ -331,6 +340,7 @@ function upsertCartItem(){
       </el-col>
     </el-row>
   </div>
+  <AllComments/>
 </template>
 
 <style scoped>
@@ -399,4 +409,6 @@ function upsertCartItem(){
     font-weight: bold;
   }
 }
+
+
 </style>
