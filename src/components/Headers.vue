@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import {router} from '../router'
 import {parseRole} from "../utils"
-import {User, SwitchButton} from "@element-plus/icons-vue"   //图标
+import {User, SwitchButton} from "@element-plus/icons-vue"
+import {ref} from "vue";
+import {createComment} from "../api/comment.ts";
+import {ElMessage} from "element-plus";
+import {createCategory} from "../api/category.ts";   //图标
 
 const role = sessionStorage.getItem('role')    //登录的时候插入的
+const dialogVisible = ref(false);
+const categoryName = ref();
 
 //退出登录
 function logout() {
@@ -33,7 +39,27 @@ function handCommand(command: string) {
     case "创建广告":
       router.push({path: "/createAdvertisement"})
           break;
+    case "创建分类":
+      dialogVisible.value = true;
+          break;
   }
+}
+
+function handleSubmit() {
+  if(categoryName.value!=''){
+    createCategory(categoryName.value).then((res) => {
+      if (res.data.code === '200') {
+        ElMessage({
+          message: '创建成功！',
+          type: 'success',
+          center: true,
+        })
+      }
+    })
+  }
+  dialogVisible.value = false;
+  // 处理提交逻辑
+  window.location.reload()
 }
 </script>
 
@@ -64,6 +90,7 @@ function handCommand(command: string) {
               <el-dropdown-menu>
                 <el-dropdown-item command="创建商品">创建商品</el-dropdown-item>
                 <el-dropdown-item command="创建广告">创建广告</el-dropdown-item>
+                <el-dropdown-item command="创建分类">创建分类</el-dropdown-item>
               </el-dropdown-menu>
             </template>
         </el-dropdown>
@@ -119,6 +146,17 @@ function handCommand(command: string) {
       </el-col>
     </el-row>
   </el-header>
+  <el-dialog title="创建分类" v-model="dialogVisible" width="50%">
+    <el-form label-width="80px">
+      <el-form-item label="分类名">
+        <el-input type="textarea" v-model="categoryName"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer" >
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleSubmit">确认</el-button>
+      </span>
+  </el-dialog>
 </template>
 
 

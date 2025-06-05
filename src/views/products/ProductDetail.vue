@@ -10,6 +10,9 @@ import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
 import {router} from "../../router";
 import AllComments from "./AllComments.vue";
+import {addCategory, createCategory, getAllCategory, getCategory, removeCategory} from "../../api/category.ts";
+import {ElMessage} from "element-plus";
+
 
 const role = sessionStorage.getItem("role");
 const {proxy} = getCurrentInstance() as any
@@ -28,10 +31,16 @@ const frozen = ref('')//冻结量
 const available = ref()// 可用库存
 const addInCart = ref('1')//我想加入购物车的量
 const amountInCart=ref('0')//购物车中已有的量
-
-
-
-
+const categories = ref<{id: number, name: string}[]>([])
+getCategory(productId).then((res) => {
+  categories.value = res.data.data
+})
+const allcategories = ref<{id: number, name: string}[]>([])
+getAllCategory().then(res => {
+  allcategories.value = res.data.data
+})
+const dialogVisible = ref(false)
+const selectedCategoryId = ref<number | null>(null)
 
 getStockpileById(productId).then((res) => {
   amount.value = res.data.data.amount;
@@ -198,6 +207,36 @@ function upsertCartItem(){
   })
 }
 
+function handleSubmit() {
+
+  addCategory(selectedCategoryId.value,productId).then((res) => {
+    if (res.data.code === '200') {
+      ElMessage({
+        message: '添加成功！',
+        type: 'success',
+        center: true,
+      })
+    }
+  })
+  dialogVisible.value = false;
+  window.location.reload();
+  // 处理提交逻辑
+  }
+
+function deleteCategory(id:number) {
+  removeCategory(id,productId).then((res) => {
+    if (res.data.code === '200') {
+      ElMessage({
+        message: '删除成功！',
+        type: 'success',
+        center: true,
+      })
+    }
+  })
+  window.location.reload();
+}
+
+
 </script>
 
 <template>
@@ -304,6 +343,19 @@ function upsertCartItem(){
             <el-table-column prop="item" label="参数名" min-width="120"/>
             <el-table-column prop="value" label="参数值" min-width="180"/>
           </el-table>
+          <div v-if="role === 'user'" style="margin-top: 20px">
+            <h3>分类</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <el-tag
+                  v-for="cat in categories"
+                  :key="cat.id"
+                  type="success"
+                  effect="plain"
+              >
+                {{ cat.name }}
+              </el-tag>
+            </div>
+          </div>
 
           <!-- 管理员编辑规格 -->
           <div v-else v-for="(spec, index) in specifications" :key="index">
@@ -335,12 +387,58 @@ function upsertCartItem(){
               保存修改
             </el-button>
           </el-col>
+          <div style="margin-top: 30px">
+            <h3>分类标签</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <el-tag
+                  v-for="cat in categories"
+                  :key="cat.id"
+                  type="success"
+                  effect="plain"
+                  closable
+                  @close="deleteCategory(cat.id)"
+              >
+                {{ cat.name }}
+              </el-tag>
+
+              <!-- 添加分类按钮 -->
+              <el-button
+                  :disabled="title==''||price==''"
+                  type="primary"
+                  @click="dialogVisible = true"
+                  class="save-button"
+                  style="position: absolute; right: 0"
+              >
+                添加分类
+              </el-button>
+
+            </div>
+          </div>
         </el-row>
 
       </el-col>
+
     </el-row>
   </div>
   <AllComments/>
+  <el-dialog v-model="dialogVisible" title="选择分类" width="30%">
+    <el-select
+        v-model="selectedCategoryId"
+        placeholder="请选择分类"
+        style="width: 100%"
+    >
+      <el-option
+          v-for="cat in allcategories"
+          :key="cat.id"
+          :label="cat.name"
+          :value="cat.id"
+      />
+    </el-select>
+    <template #footer>
+      <el-button @click="dialogVisible = false">取消</el-button>
+      <el-button type="primary" @click="handleSubmit" :disabled="!selectedCategoryId">添加</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>
