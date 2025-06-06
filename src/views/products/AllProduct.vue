@@ -1,23 +1,45 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ProductItem from "../../components/ProductItem.vue";
-import {getAllProduct} from "../../api/products.ts";
+import {getAllProduct, search} from "../../api/products.ts";
 import {router} from "../../router";
 import {deleteAdvertisementById, getAllAdvertisements} from "../../api/advertisements.ts";
 import {parseRole} from "../../utils";
 import {Delete} from "@element-plus/icons-vue";
+import {deleteCategory, getAllCategory, getProducts} from "../../api/category.ts";
+
 
 const role = sessionStorage.getItem("role");
 
-const AdList = ref()
+const AdList = ref<any[]>([])
+
 getAllAdvertisements().then(res => {
     AdList.value = res.data.data
 })
 
-const productList = ref()
+const productList = ref<any[]>([])
 getAllProduct().then(res => {
     productList.value = res.data.data
 })
+
+const categories = ref<{id: number, name: string}[]>([])
+getAllCategory().then(res => {
+  categories.value = [{ id: 0, name: '全部' }, ...res.data.data]
+})
+const activeCategory = ref('0')  // 默认选中“全部”
+
+function handleCategorySelect(index: string) {
+  activeCategory.value = index
+  if (index === '0') {
+    getAllProduct().then(res => {
+      productList.value = res.data.data
+    })
+  } else {
+    getProducts(Number(index)).then(res => {
+      productList.value = res.data.data
+    })
+  }
+}
 
 function toProductDetail(productId: number) {
     router.push("/productDetail/" + productId.toString());
@@ -55,32 +77,120 @@ function isDelete(adId: number) {
   })
 }
 
+function isDeleteC(categoryId: number) {
+  ElMessageBox.confirm('确定删除该分类吗？', '提示', {
+    customClass: "customDialog",
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+    showClose: false,
+    roundButton: true,
+    center: true,
+  }).then(() => {
+    deleteCategory(categoryId).then(res => {
+      if (res.data.code === '200') {
+        ElMessage({
+          message: '删除成功',
+          type: 'success',
+          center: true,
+        })
+      } else if (res.data.code === '400' || res.data.code === '401') {
+        ElMessage({
+          message: res.data.msg,
+          type: 'error',
+          center: true,
+        })
+      }
+    })
+  })
+  window.location.reload()
+}
+
+const searchKeyword = ref('')
+function handleSearch() {
+  if (searchKeyword.value === '') {
+    getAllProduct().then(res => {
+      productList.value = res.data.data
+    })
+  }else {
+    search(searchKeyword.value).then(res => {
+      productList.value = res.data.data
+    })
+  }
+
+}
+
 </script>
 
 <template>
-  <div v-if="AdList.length > 0" class="advertisement">
-    <el-carousel style="width: 700px">
-      <el-carousel-item v-for="ad in AdList" :key="ad.id" @dblclick="toAdvertisementDetail(ad.id)">
-        <img :src="ad.imgUrl" alt="广告图片" class="advertisement-image"/>
-        <el-icon v-if="parseRole(role) === '管理员'" class="close-icon" @click="isDelete(ad.id)">
-          <el-tooltip content="删除" placement="top">
-            <Delete />
-          </el-tooltip>
-        </el-icon>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
-  <div class="allProduct">
-    <ProductItem
-        v-for="product in productList"
-        :product="product"
-        :key="product.id"
-        @dblclick="toProductDetail(Number(product.id))"
-        class="productItem"
-    />
-  </div>
+  <el-container style="height: 100vh; border: 1px solid #ccc;">
+    <el-aside width="200px" style="background-color: #409eff; color: white;">
+      <el-menu
+          default-active=activeCategory.value
+          background-color="#409eff"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          @select="handleCategorySelect"
+      >
+        <el-menu-item
+            v-for="category in categories"
+            :key="category.id"
+            :index="category.id.toString()"
+            style="--el-menu-item-padding: 0"
+        >
+          <div
+              style="display: flex; align-items: center; width: 100%; padding: 0 20px;"
+          >
+            <span>{{ category.name }}</span>
+            <el-icon v-if="parseRole(role) === '管理员'&& category.name !== '全部'" class="close-icon" @click.stop="isDeleteC(Number(category.id)) ">
+              <el-tooltip content="删除" placement="top">
+                <Delete />
+              </el-tooltip>
+            </el-icon>
+          </div>
+        </el-menu-item>
+      </el-menu>
+    </el-aside>
+    <el-main style="background-color: #f0f2f5;">
+      <div v-if="AdList.length > 0" class="advertisement">
+        <el-carousel style="width: 700px">
+          <el-carousel-item v-for="ad in AdList" :key="ad.id" @dblclick="toAdvertisementDetail(ad.id)">
+            <img :src="ad.imgUrl" alt="广告图片" class="advertisement-image"/>
+            <el-icon v-if="parseRole(role) === '管理员'" class="close-icon" @click="isDelete(ad.id)">
+              <el-tooltip content="删除" placement="top">
+                <Delete />
+              </el-tooltip>
+            </el-icon>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
 
+      <div class="search-container">
+        <el-input
+            v-model="searchKeyword"
+            placeholder="搜索商品名称"
+            clearable
+            style="width: 400px; margin: 20px auto; display: block;"
+        >
+          <template #append>
+            <el-button @click="handleSearch">搜索</el-button>
+          </template>
+        </el-input>
+      </div>
+
+      <div class="allProduct">
+        <ProductItem
+            v-for="product in productList"
+            :product="product"
+            :key="product.id"
+            @dblclick="toProductDetail(Number(product.id))"
+            class="productItem"
+        />
+      </div>
+    </el-main>
+  </el-container>
 </template>
+
 
 <style scoped>
 .advertisement {

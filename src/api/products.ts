@@ -88,3 +88,11 @@ export const getStockpileById = (productId: number) => {
             return res
         })
 }
+
+export const search = (keyword: string) => {
+    return axios.get(`${PRODUCTS_MODULE}/search`,
+        { params: { keyword: keyword } })
+       .then(res => {
+            return res
+        })
+}
