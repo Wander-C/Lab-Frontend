@@ -6,14 +6,14 @@ type updateAdInfo = {
     title?: string,
     content?: string,
     imgUrl?: string,
-    productId: number,
+    productIds: number[],
 }
 
 type createAdInfo = {
     title: string,
     content: string,
     imgUrl: string,
-    productId: number,
+    productIds: number[],
 }
 
 // 获取所有广告信息

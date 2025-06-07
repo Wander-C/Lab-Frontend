@@ -4,18 +4,25 @@ import { ElMessage } from "element-plus";
 import { createAdvertisement} from "../../api/advertisements.ts";
 import {uploadImage} from "../../api/tools.ts";
 import {UploadFilled} from "@element-plus/icons-vue";
+import {getAllProduct} from "../../api/products.ts";
 
 const adTitle = ref("");
 const adContent = ref("");
-const productId = ref<number>(0);
 const imgUrl = ref("");
 
+const adProductIds = ref<number[]>([])
+
+const productList = ref()
+getAllProduct().then(res => {
+  productList.value = res.data.data
+})
+
 const isValidForm = computed(() => {
-  return adTitle.value !=null &&adContent.value !== "" &&productId.value !=null;
+  return adTitle.value !=null &&adContent.value !== "" && adProductIds.value !=null;
 });
 
 const isProductIdLegal = computed(() => {
-  return productId.value != null && productId.value > 0
+  return adProductIds.value != null && adProductIds.value.length > 0
 })
 
 
@@ -50,7 +57,7 @@ function createAd() {
       title: adTitle.value,
       content: adContent.value,
       imgUrl: imgUrl.value,
-      productId: productId.value,
+      productIds: adProductIds.value,
     }).then((res) => {
       if (res.data.code === "200") {
         ElMessage({
@@ -79,7 +86,7 @@ function createAd() {
 function resetForm() {
   adTitle.value = "";
   adContent.value = "";
-  productId.value = 0;
+  adProductIds.value = [];
   imgUrl.value = "";
 }
 </script>
@@ -100,11 +107,22 @@ function resetForm() {
                 placeholder="请输入广告内容"
             ></el-input>
           </el-form-item>
-          <el-form-item label="产品ID(必填)" required>
-            <el-input
-                v-model.number="productId"
-                placeholder="请输入产品ID"
-            ></el-input>
+          <el-form-item label="广告对象(必填)" required>
+            <el-select
+                v-model="adProductIds"
+                multiple
+                placeholder="请选择产品"
+                filterable
+                remote
+                reserve-keyword
+            >
+              <el-option
+                  v-for="item in productList"
+                  :key="item.id"
+                  :label="item.title"
+                  :value="item.id"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="广告封面" class="full-width">
             <el-input

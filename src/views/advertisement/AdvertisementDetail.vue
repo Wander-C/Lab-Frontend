@@ -12,7 +12,7 @@ const adId = Number(proxy.$route.params.adId)
 const title = ref('')
 const content = ref('')
 const imgUrl = ref('')
-const productId = ref('')
+const productIds = ref<number[]>([])
 
 
 const imageFileList = ref([])
@@ -47,7 +47,7 @@ function getAdInfo() {
         title.value = res.data.data.title
         content.value = res.data.data.content
         imgUrl.value = res.data.data.imgUrl
-        productId.value = res.data.data.productId
+        productIds.value = res.data.data.productIds
       })
 }
 getAdInfo()
@@ -58,7 +58,7 @@ function update() {
     title: title.value == '' ? undefined : title.value,
     content: content.value == '' ? undefined : content.value,
     imgUrl: imgUrl.value == '' ? undefined : imgUrl.value,
-    productId: Number(productId.value)
+    productIds: productIds.value
   }).then(res => {
     if (res.data.code === '200') {
       ElMessage({
