@@ -5,7 +5,7 @@ import {getAllProduct, search} from "../../api/products.ts";
 import {router} from "../../router";
 import {deleteAdvertisementById, getAllAdvertisements} from "../../api/advertisements.ts";
 import {parseRole} from "../../utils";
-import {Delete} from "@element-plus/icons-vue";
+import {Delete, Close} from "@element-plus/icons-vue";
 import {deleteCategory, getAllCategory, getProducts} from "../../api/category.ts";
 
 
@@ -49,8 +49,12 @@ function toAdvertisementDetail(adId: number) {
   router.push("/advertisementDetail/" + adId.toString());
 }
 
+function toPromotionDetail(promotionId: number) {
+  router.push("/promotionDetail/" + promotionId.toString());
+}
+
 function isDelete(adId: number) {
-  ElMessageBox.confirm('确定删除该商品吗？', '提示', {
+  ElMessageBox.confirm('确定删除该广告吗？', '提示', {
     customClass: "customDialog",
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -124,10 +128,11 @@ function handleSearch() {
 
 <template>
   <el-container style="height: 100vh; border: 1px solid #ccc;">
-    <el-aside width="200px" style="background-color: #409eff; color: white;">
+    <el-aside class="cart-aside">
       <el-menu
+          class="cart-menu"
           default-active=activeCategory.value
-          background-color="#409eff"
+          background-color="#8B7355"
           text-color="#fff"
           active-text-color="#ffd04b"
           @select="handleCategorySelect"
@@ -144,7 +149,7 @@ function handleSearch() {
             <span>{{ category.name }}</span>
             <el-icon v-if="parseRole(role) === '管理员'&& category.name !== '全部'" class="close-icon" @click.stop="isDeleteC(Number(category.id)) ">
               <el-tooltip content="删除" placement="top">
-                <Delete />
+                <Close />
               </el-tooltip>
             </el-icon>
           </div>
@@ -152,31 +157,32 @@ function handleSearch() {
       </el-menu>
     </el-aside>
     <el-main style="background-color: #f0f2f5;">
+      <div class="search-container">
+        <el-input
+            v-model="searchKeyword"
+            placeholder="搜索商品名称"
+            clearable
+        >
+          <template #append>
+            <el-button style="background: red; color: white" @click="handleSearch">搜索</el-button>
+          </template>
+        </el-input>
+      </div>
+
       <div v-if="AdList.length > 0" class="advertisement">
         <el-carousel style="width: 700px">
           <el-carousel-item v-for="ad in AdList" :key="ad.id" @dblclick="toAdvertisementDetail(ad.id)">
             <img :src="ad.imgUrl" alt="广告图片" class="advertisement-image"/>
             <el-icon v-if="parseRole(role) === '管理员'" class="close-icon" @click="isDelete(ad.id)">
               <el-tooltip content="删除" placement="top">
-                <Delete />
+                <Close />
               </el-tooltip>
             </el-icon>
           </el-carousel-item>
         </el-carousel>
       </div>
 
-      <div class="search-container">
-        <el-input
-            v-model="searchKeyword"
-            placeholder="搜索商品名称"
-            clearable
-            style="width: 400px; margin: 20px auto; display: block;"
-        >
-          <template #append>
-            <el-button @click="handleSearch">搜索</el-button>
-          </template>
-        </el-input>
-      </div>
+
 
       <div class="allProduct">
         <ProductItem
@@ -216,6 +222,7 @@ function handleSearch() {
 .advertisement-image {
   width: 700px;
   height: 300px;
+  margin-top: 10px;
 }
 
 .close-icon {
@@ -226,5 +233,19 @@ function handleSearch() {
   z-index: 10;
   font-size: 30px;
   color: red;
+}
+
+.search-container {
+  text-align: center;
+  width: 60%;
+  margin: 10px auto;
+  display: flex;
+}
+
+.cart-aside  {
+
+  width:200px;
+  background-color: #8B7355;
+  color: white;
 }
 </style>

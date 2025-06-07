@@ -358,7 +358,7 @@ function deleteCategory(id:number) {
           </div>
 
           <!-- 管理员编辑规格 -->
-          <div v-else v-for="(spec, index) in specifications" :key="index">
+          <div v-else v-for="(spec, index) in specifications" :key="index" style="margin-bottom: 10px">
             <el-input
                 v-model="spec.item"
                 placeholder="参数名"
@@ -471,10 +471,6 @@ function deleteCategory(id:number) {
 .main-image {
   width: 100%;
   height: 400px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  border: 2px solid #409eff !important;
-  box-sizing: border-box;
 }
 
 .price-section {

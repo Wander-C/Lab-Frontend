@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Delete } from '@element-plus/icons-vue'
+import {Close } from '@element-plus/icons-vue'
 import {deleteProductById, getStockpileById} from "../api/products.ts";
 import {parseRole} from "../utils";
 import {router} from "../router";
@@ -68,7 +68,7 @@ function isDelete() {
       <img class="cover" :src="productCover"  alt="加载失败">
       <el-icon v-if="parseRole(role) === '管理员'" class="close-icon" @click="isDelete ">
         <el-tooltip content="删除" placement="top">
-          <Delete />
+          <Close />
         </el-tooltip>
       </el-icon>
     </div>
