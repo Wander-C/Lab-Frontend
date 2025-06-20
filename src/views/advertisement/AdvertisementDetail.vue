@@ -4,6 +4,8 @@ import {getCurrentInstance} from "vue";
 import {getAdvertisementById, updateAdvertisementInfo} from "../../api/advertisements.ts";
 import {uploadImage} from "../../api/tools.ts";
 import {UploadFilled} from "@element-plus/icons-vue";
+import {router} from "../../router";
+import ProductItem from "../../components/ProductItem.vue";
 
 const role = sessionStorage.getItem('role')
 const {proxy} = getCurrentInstance() as any
@@ -13,7 +15,7 @@ const title = ref('')
 const content = ref('')
 const imgUrl = ref('')
 const productIds = ref<number[]>([])
-
+const productList = ref([])
 
 const imageFileList = ref([])
 function uploadHttpRequest() {
@@ -47,7 +49,7 @@ function getAdInfo() {
         title.value = res.data.data.title
         content.value = res.data.data.content
         imgUrl.value = res.data.data.imgUrl
-        productIds.value = res.data.data.productIds
+        productList.value = res.data.data.productVOs
       })
 }
 getAdInfo()
@@ -76,13 +78,15 @@ function update() {
   })
 }
 
+function toProductDetail(productId: number) {
+  router.push("/productDetail/" + productId.toString());
+}
 
 </script>
 
 <template>
-  <div class="advertisement-detail">
-    <h1 v-if="role=='user'" class="title">{{title}}</h1>
-    <el-row v-else>
+  <div v-if="role == 'admin'" class="advertisement-detail">
+    <el-row>
       <el-col :span="20">
         <el-input
             v-model="title"
@@ -91,13 +95,12 @@ function update() {
       </el-col>
 
       <el-col :span="4" v-if="role=='admin'">
-        <el-button  type="primary" class="button" style="margin-left: 150px" @click="update">更新</el-button>
+        <el-button type="primary" class="button" style="margin-left: 150px" @click="update">更新</el-button>
       </el-col>
-
     </el-row>
 
     <el-row :gutter="30">
-      <el-col :span="6" class="image">
+      <el-col :span="8" class="image">
         <el-image
             :src="imgUrl"
             :preview-src-list="[imgUrl]"
@@ -106,7 +109,7 @@ function update() {
         >
         </el-image>
 
-        <h1 v-if="role=='admin'" for="newCover">↓↓↓↓替换新封面↓↓↓↓</h1>
+        <h1 for="newCover">↓↓↓↓替换新封面↓↓↓↓</h1>
         <el-upload v-if="role=='admin'"
                    drag
                    :limit="1"
@@ -116,32 +119,85 @@ function update() {
                    :on-exceed="handleExceed"
                    :on-remove="handleRemove"
         >
-          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+          <el-icon class="el-icon--upload">
+            <upload-filled/>
+          </el-icon>
           <div class="el-upload__text">
             Drop file here or <em>click to upload</em>
           </div>
         </el-upload>
-      </el-col>
 
-      <el-col :span="6">
         <label for="content" style="font-size: larger">内容</label>
         <el-input
-            v-if="role=='admin'"
             id="content"
             v-model="content"
             type="textarea"
             :rows="3"
         />
-        <p v-else>{{content}}</p>
+      </el-col>
+
+      <el-col :span="16">
+        <el-table :data="productList" border @row-dblclick="(row) => toProductDetail(row.id)">
+          <el-table-column prop="cover" label="封面" width="150">
+            <template #default="scope">
+              <el-image
+                  :src="scope.row.cover"
+                  :preview-src-list="[scope.row.cover]"
+                  fit="contain"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="title" label="标题"></el-table-column>
+          <el-table-column prop="description" label="描述"></el-table-column>
+        </el-table>
       </el-col>
     </el-row>
+  </div>
+
+  <div v-else>
+    <el-image
+        :src="imgUrl"
+        class="user-image"
+    >
+    </el-image>
+    <div class="advertisement-detail">
+      <el-table :data="productList" border @row-dblclick="(row) => toProductDetail(row.id)">
+        <el-table-column prop="cover" label="封面" width="150">
+          <template #default="scope">
+            <el-image
+                :src="scope.row.cover"
+                :preview-src-list="[scope.row.cover]"
+                fit="contain"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column prop="title" label="书名">
+          <template #default="scope">
+            <el-text tag="b">{{ scope.row.title }}</el-text>
+          </template>
+        </el-table-column>
+        <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="price" label="价格">
+          <template #default="scope">
+            <el-tag>￥{{ scope.row.price }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="rate" label="评分">
+          <template #default="scope">
+            <el-text class="value">{{ scope.row.rate }}</el-text>
+          </template>
+        </el-table-column>
+
+      </el-table>
+    </div>
+
   </div>
 
 </template>
 
 <style scoped>
 .advertisement-detail {
-  width: 90%;
+  width: 70%;
   margin: 20px auto;
   border: solid 1px #ccc;
   padding: 20px;
@@ -154,11 +210,23 @@ function update() {
 
 .main-image {
   width: 100%;
-  height: 400px;
+  height: 250px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);
   border: 2px solid #409eff !important;
   box-sizing: border-box;
 }
 
+.user-image {
+  width: 100%;
+  height: 600px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+.value {
+  color: red;
+  font-size: larger;
+  font-weight: bold;
+}
 </style>
