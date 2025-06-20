@@ -5,7 +5,6 @@ import {getAdvertisementById, updateAdvertisementInfo} from "../../api/advertise
 import {uploadImage} from "../../api/tools.ts";
 import {UploadFilled} from "@element-plus/icons-vue";
 import {router} from "../../router";
-import ProductItem from "../../components/ProductItem.vue";
 
 const role = sessionStorage.getItem('role')
 const {proxy} = getCurrentInstance() as any
