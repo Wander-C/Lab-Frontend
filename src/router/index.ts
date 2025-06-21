@@ -41,6 +41,12 @@ const router = createRouter({
         }, {
             path: '/advertisementDetail/:adId',
             component: () => import('../views/advertisement/AdvertisementDetail.vue'),
+        }, {
+             path: '/createPromotion',
+             component: () => import('../views/promotions/CreatePromotion.vue'),
+        }, {
+             path: '/promotionDetail/:promotionId',
+             component: () => import('../views/promotions/PromotionDetail.vue'),
         }]
     }]
 })
