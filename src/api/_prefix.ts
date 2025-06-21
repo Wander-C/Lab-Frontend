@@ -23,4 +23,8 @@ export const Promotions_MODULE = `${API_MODULE}/promotions`
 //评论模块
 export const COMMENTS_MODULE = `${API_MODULE}/comments`
 
+//分类模块
 export const CATEGORIES_MODULE = `${API_MODULE}/category`
+
+//优惠券模块
+export const COUPONS_MODULE = `${API_MODULE}/coupons`
