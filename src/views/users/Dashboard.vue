@@ -5,11 +5,15 @@ import {parseRole} from "../../utils"
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
 import {router} from "../../router";
+import {getUserCoupons} from "../../api/coupons.ts";
 
 const role = sessionStorage.getItem("role")
 const username = sessionStorage.getItem("username") || ''
 
 const displayInfoCard = ref(true)
+const displayCouponCard = ref(false)
+
+const coupons = ref([])
 
 const avatar=ref('')//头像
 const email = ref('')//邮箱
@@ -85,7 +89,42 @@ function getUserInfo() {
   })
 }
 
+getCoupons()
+function getCoupons() {
+  getUserCoupons().then((res) => {
+    coupons.value = res.data.data
+  })
+}
 
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
+
+function calculateTimeRemaining(startTime: string, endTime: string) {
+  const now = new Date();
+  const start = new Date(startTime);
+  const end = new Date(endTime); // 使用 trim() 去除隐藏字符
+
+  if (start > now) {
+    return  "未开始";
+  }
+  if (end < now) {
+    return  "已结束";
+  }
+
+  const diff = end.getTime() - now.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+  return `${days}天${hours}小时`;
+}
 
 function updateInfo() {
   accountsUpdate({
@@ -161,10 +200,11 @@ function updatePassword() {
           title="个人信息"
       >
         <template #extra>
-          <el-button type="primary" @click="displayInfoCard = !displayInfoCard">
+          <el-button type="primary" @click="displayInfoCard = !displayInfoCard; displayCouponCard = false">
             <span v-if="displayInfoCard">修改密码</span>
             <span v-else>修改个人信息</span>
           </el-button>
+          <el-button type="primary" @click="displayCouponCard = !displayCouponCard">优惠券</el-button>
         </template>
 
         <el-descriptions-item label="身份">
@@ -193,7 +233,30 @@ function updatePassword() {
       </el-row>
     </el-card>
 
-    <el-card v-if="displayInfoCard" class="wrap">
+    <el-card v-if="displayCouponCard" class="wrap">
+      <el-card  class="change-card">
+        <h1>所拥有优惠券</h1>
+        <el-table :data="coupons" border>
+          <el-table-column prop="amount" label="面值"></el-table-column>
+          <el-table-column prop="minAmount" label="最低消费金额"></el-table-column>
+          <el-table-column label="剩余时间">
+            <template #default="scope">
+              {{ calculateTimeRemaining(formatDate(new Date()), scope.row.endTime) }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="status" label="状态">
+            <template #default="scope">
+              <el-tag v-if="scope.row.status == 'AVAILABLE'">可用</el-tag>
+              <el-tag v-else-if="scope.row.status == 'UNAVAILABLE'" type="success">已使用</el-tag>
+              <el-tag v-else-if="scope.row.status == 'EXPIRED'" type="danger">已过期</el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+    </el-card>
+
+    <el-card v-else-if="displayInfoCard" class="wrap">
       <el-card  class="change-card">
         <template #header>
           <div class="card-header">
@@ -234,7 +297,7 @@ function updatePassword() {
 
           <el-form-item>
             <label for="address">收货地址</label>
-            <el-input id="address" type="textarea" rows="3" v-model="newLocation" ></el-input>
+            <el-input id="address" type="textarea" :rows="3" v-model="newLocation" ></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -266,7 +329,7 @@ function updatePassword() {
       </el-card>
     </el-card>
 
-    <el-card v-if="!displayInfoCard" class="wrap">
+    <el-card v-else-if="!displayInfoCard" class="wrap">
       <el-card  class="change-card">
         <template #header>
           <div class="card-header">
@@ -300,7 +363,6 @@ function updatePassword() {
         </el-form>
       </el-card>
     </el-card>
-
 
   </el-main>
 

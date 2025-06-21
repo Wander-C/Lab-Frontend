@@ -42,6 +42,8 @@ function handCommand(command: string) {
     case "创建分类":
       dialogVisible.value = true;
           break;
+    case "创建活动":
+      router.push({path: "/createPromotion"})
   }
 }
 
@@ -90,6 +92,7 @@ function handleSubmit() {
               <el-dropdown-menu>
                 <el-dropdown-item command="创建商品">创建商品</el-dropdown-item>
                 <el-dropdown-item command="创建广告">创建广告</el-dropdown-item>
+                 <el-dropdown-item command="创建活动">创建活动</el-dropdown-item>
                 <el-dropdown-item command="创建分类">创建分类</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -163,8 +166,6 @@ function handleSubmit() {
 <style scoped>
 .custom-header {
   background-color: #409eff;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
 
   display: flex;
   flex-direction: column;

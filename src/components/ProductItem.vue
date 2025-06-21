@@ -11,6 +11,7 @@ const props = defineProps({
     price: Number,
     cover: String,
     rate: Number,
+    discountPrice: Number,
   })
 })
 
@@ -20,6 +21,7 @@ const productRate = props.product.rate;
 const productCover = props.product.cover;
 const productTitle = props.product.title;
 const productPrice = props.product.price;
+const productDiscountPrice = props.product.discountPrice;
 const productStockPileAmount = ref();
 const productStockPileFrozen = ref();
 
@@ -75,9 +77,11 @@ function isDelete() {
     <h1 class="productTitle" >{{ productTitle }}</h1>
     <el-descriptions :column="1" border>
       <el-descriptions-item label="价格">
-        <el-tag type="warning" class="product-price">
+        <el-tag v-if="productDiscountPrice == null" type="warning" class="product-price">
           ￥{{ productPrice }}
         </el-tag>
+        <el-text v-if="productDiscountPrice != null" tag="del" style="font-size: smaller">￥{{ productPrice }}</el-text>
+        <el-text v-if="productDiscountPrice != null" class="discount-price">￥{{ productDiscountPrice }}</el-text>
         </el-descriptions-item>
       <el-descriptions-item label="评分">
         <el-tag type="danger">
@@ -85,7 +89,7 @@ function isDelete() {
         </el-tag>
       </el-descriptions-item>
 
-      <el-descriptions-item label="可用库存">
+      <el-descriptions-item label="剩余">
         {{productStockPileAmount-productStockPileFrozen}}
       </el-descriptions-item>
     </el-descriptions>
@@ -135,5 +139,11 @@ function isDelete() {
 .productTitle:hover {
   color: red; /* 鼠标悬停时的文本颜色 */
   text-decoration: underline;
+}
+
+.discount-price {
+  font-size: 12px;
+  color: red;
+  font-weight: bold;
 }
 </style>

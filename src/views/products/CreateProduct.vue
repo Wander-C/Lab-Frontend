@@ -164,6 +164,8 @@ function handleDeleteSpecificationByItem(Item: string) {
                 id="productDescription"
                 placeholder="请输入商品描述"
                 v-model="productDescription"
+                type="textarea"
+                :rows="3"
             />
           </el-form-item>
 
@@ -173,6 +175,8 @@ function handleDeleteSpecificationByItem(Item: string) {
                 id="productDetail"
                 placeholder="请输入商品详情"
                 v-model="productDetail"
+                type="textarea"
+                :rows="5"
             />
           </el-form-item>
 
@@ -203,7 +207,6 @@ function handleDeleteSpecificationByItem(Item: string) {
                     id="specificationValue"
                     placeholder="请输入规格内容"
                     v-model="specificationValue"
-                    type="textarea"
                 />
               </el-form-item>
 

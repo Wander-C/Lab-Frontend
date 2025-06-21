@@ -2,15 +2,12 @@
 import {getCurrentInstance, ref} from 'vue'
 import {getProductById, updateProductInfo, getStockpileById, adjustStockpile} from '../../api/products.ts'
 import {addProductToCart, getCartItems,updateCartItem} from "../../api/carts.ts";
-import {getCommentsByProductId} from "../../api/comment.ts";
 import type { specificationInfo } from '../../api/products.ts'
 import type {item} from "../../api/carts.ts";
-import type{commentInfo}from "../../api/comment.ts"
 import {UploadFilled} from "@element-plus/icons-vue";
 import {uploadImage} from "../../api/tools.ts";
-import {router} from "../../router";
 import AllComments from "./AllComments.vue";
-import {addCategory, createCategory, getAllCategory, getCategory, removeCategory} from "../../api/category.ts";
+import {addCategory,getAllCategory, getCategory, removeCategory} from "../../api/category.ts";
 import {ElMessage} from "element-plus";
 
 
@@ -19,18 +16,19 @@ const {proxy} = getCurrentInstance() as any
 const productId = Number(proxy.$route.params.productId)
 
 const title = ref('')// title: string,
-const price = ref('')//     price: number,
-const rate = ref('')//     rate: number,           // 评分,0~10
+const price = ref()//     price: number,
+const discountPrice = ref()
+const rate = ref()//     rate: number,           // 评分,0~10
 const description = ref('')//     description?: string,   // 描述
 const cover = ref('')//     cover?: string,         // 封面URL
 const detail = ref('')//     detail?: string,        // 详细说明
 const specifications = ref<specificationInfo[]>([])//     specification?: Set<specificationInfo>,    // 规格说明,为集合，一个商品可以对应多个规格
 
-const amount = ref('')//库存量
-const frozen = ref('')//冻结量
+const amount = ref()//库存量
+const frozen = ref()//冻结量
 const available = ref()// 可用库存
-const addInCart = ref('1')//我想加入购物车的量
-const amountInCart=ref('0')//购物车中已有的量
+const addInCart = ref(1)//我想加入购物车的量
+const amountInCart=ref(0)//购物车中已有的量
 const categories = ref<{id: number, name: string}[]>([])
 getCategory(productId).then((res) => {
   categories.value = res.data.data
@@ -82,6 +80,7 @@ function getProduct(ID: number) {
   getProductById(ID).then((res) => {//   id: string,
     title.value = res.data.data.title//   title: string,
     price.value = res.data.data.price//   price: number,
+    discountPrice.value = res.data.data.discountPrice
     rate.value = res.data.data.rate//   rate: number,           // 评分,0~10
     description.value = res.data.data.description//   description?: string,   // 描述
     cover.value = res.data.data.cover//   cover?: string,         // 封面URL
@@ -287,7 +286,15 @@ function deleteCategory(id:number) {
             <!-- 价格 -->
             <div class="price-section">
               <span class="price-label">价格：</span>
-              <span v-if="role == 'user'" class="price-value">¥{{ price }}</span>
+              <span v-if="role == 'user'" class="price-value">
+                <span v-if="discountPrice == null">
+                ¥{{ price }}
+                </span>
+                <span v-else>
+                  <el-text tag="del">¥{{ price }}</el-text>
+                  ¥{{ discountPrice }}
+                </span>
+              </span>
               <el-input-number v-else v-model="price" :min="0" :precision="2"/>
             </div>
 
@@ -322,7 +329,7 @@ function deleteCategory(id:number) {
             <!-- 商品详情 -->
             <div class="detail-section">
               <h3>商品详情</h3>
-              <div v-if="role == 'user'" v-html="detail"></div>
+              <div v-if="role == 'user'" v-html="detail"  class="detail-content"></div>
               <el-input
                   v-else
                   v-model="detail"
@@ -504,5 +511,14 @@ function deleteCategory(id:number) {
   }
 }
 
-
+.detail-content {
+  max-height: 200px; /* 设置最大高度 */
+  overflow-y: auto;   /* 超出部分可垂直滚动 */
+  padding: 10px;
+  border: 1px solid #ebeef5;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  line-height: 1.6;
+}
 </style>

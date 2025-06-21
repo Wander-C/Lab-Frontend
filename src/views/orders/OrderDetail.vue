@@ -4,6 +4,7 @@ import type {item} from "../../api/carts.ts";
 import { checkout } from "../../api/carts.ts";
 import { payOrder } from "../../api/orders.ts";
 import {router} from "../../router";
+import {getUserCoupons} from "../../api/coupons.ts";
 
 onMounted(() => {})
 
@@ -18,6 +19,15 @@ const address = ref('')
 const paymentMethod = ref('')
 const orderId = ref('')
 const paymentForm = ref('')
+const coupons = ref<any[]>([])
+const coupon = ref<number>(0)
+
+getCoupons()
+function getCoupons() {
+  getUserCoupons().then((res) => {
+    coupons.value = res.data.data
+  })
+}
 
 const isDisabled = () => {
   return !(name.value && phone.value && address.value && paymentMethod.value)
@@ -73,6 +83,7 @@ function handlePayOrder() {
     }
 })
 }
+
 </script>
 
 <template>
@@ -159,6 +170,22 @@ function handlePayOrder() {
 
     <el-row justify="end">
       <span class="total-price">总价：￥{{ totalAmount }}</span>
+      <el-select
+          v-model="coupon"
+          placeholder="请选择优惠券"
+          style="width: 200px;"
+          clearable
+          @change="totalAmount = totalAmount - coupon"
+      >
+        <el-option
+            v-for="coupon in coupons"
+            :key="coupon.id"
+            :label="coupon.amount"
+            :value="coupon.amount"
+        />
+      </el-select>
+    </el-row>
+    <el-row justify="end" style="margin-top: 10px">
       <el-button
           type="primary"
           :disabled="isDisabled()"
