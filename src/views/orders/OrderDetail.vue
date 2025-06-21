@@ -20,7 +20,7 @@ const paymentMethod = ref('')
 const orderId = ref('')
 const paymentForm = ref('')
 const coupons = ref<any[]>([])
-const coupon = ref<number>(0)
+const coupon = ref<number>()
 
 getCoupons()
 function getCoupons() {
@@ -66,6 +66,10 @@ function handlePayOrder() {
       Number(orderId.value)
   ).then((res) => {
     if (res.data.code === '200') {
+      paymentForm.value = res.data.data.paymentForm
+      const tempWindow = window.open('', '_blank')
+      tempWindow?.document.write(paymentForm.value)
+      tempWindow?.document.close()
       ElMessageBox.alert('支付成功！', {
         center: true,
         confirmButtonText: '确定',
@@ -73,7 +77,7 @@ function handlePayOrder() {
           router.push('/cart')
         }
       })
-      paymentForm.value = res.data.data.paymentForm
+
     } else if (res.data.code === '400' || res.data.code === '401') {
       ElMessage({
         message: res.data.msg,
@@ -174,7 +178,6 @@ function handlePayOrder() {
           v-model="coupon"
           placeholder="请选择优惠券"
           style="width: 200px;"
-          clearable
           @change="totalAmount = totalAmount - coupon"
       >
         <el-option
