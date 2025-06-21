@@ -54,35 +54,38 @@ function handleLogin() {
 
 <template>
   <el-main class="main-frame bgimage">
-    <el-card class="login-card">
-      <div>
-        <h1>登入您的账户</h1>
-        <el-form>
-          <el-form-item>
-            <label  for="username">用户名</label>
+    <div class="login-frame">
+          <img src="../../assets/cover.png" alt="cover" class="cover"></img>
 
-            <el-input id="username" type="text" v-model="username"
-                      required
-                      placeholder="请输入用户名"/>
-          </el-form-item>
+          <div style="width: 300px">
+            <h1>登入您的账户</h1>
+            <el-form>
+              <el-form-item>
+                <label for="username">用户名</label>
 
-          <el-form-item>
-            <label for="password">密码</label>
-            <el-input id="password" type="password" v-model="password"
-                      required
-                      placeholder="••••••••"/>
-          </el-form-item>
+                <el-input id="username" type="text" v-model="username"
+                          required
+                          placeholder="请输入用户名"/>
+              </el-form-item>
 
-          <span class="button-group">
+              <el-form-item>
+                <label for="password">密码</label>
+                <el-input id="password" type="password" v-model="password"
+                          required
+                          placeholder="••••••••"/>
+              </el-form-item>
+
+              <span class="button-group">
               <el-button @click.prevent="handleLogin" :disabled="loginDisabled"
                          type="primary">登入</el-button>
               <router-link to="/register" v-slot="{navigate}">
                 <el-button @click="navigate">去注册</el-button>
               </router-link>
           </span>
-        </el-form>
-      </div>
-    </el-card>
+            </el-form>
+          </div>
+
+    </div>
   </el-main>
 </template>
 
@@ -96,8 +99,20 @@ function handleLogin() {
   justify-content: center;
 }
 
+.login-frame {
+  display: flex;
+  align-items: flex-start; /* 上边缘对齐 */
+  justify-content: space-around; /* 水平分布 */
+  gap: 20px; /* 两者之间的间距 */
+  border: #999999 1px solid;
+}
+
+.cover {
+  width: 500px;
+  height: 100%;
+}
 .bgimage {
-  background-image: url("../../assets/shopping-1s-1084px.svg");
+  //background-image: url("../../assets/cover.png");
 }
 
 .login-card {
